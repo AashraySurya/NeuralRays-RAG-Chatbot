@@ -62,21 +62,22 @@ The project follows this RAG workflow:
 ```text
 NeuralRays-RAG-Chatbot/
 │
-├── README.md
-├── requirements.txt
-├── .gitignore
-├── .env.example
-│
-├── crawler.py
-├── ingest.py
-├── chatbot.py
-│
 ├── data/
-│   ├── pages.json
-│   └── chroma_db/          # Generated locally and ignored by Git
+│   ├── chroma_db/          # Local ChromaDB vector database, ignored by Git
+│   └── pages.json          # Extracted NeuralRays website content
 │
-└── tests/
-    └── sample_questions.md
+├── tests/
+│   └── sample_questions.md # Sample questions for testing the chatbot
+│
+├── venv/                   # Local virtual environment, ignored by Git
+│
+├── .env.example            # Example environment variable file
+├── .gitignore              # Files and folders excluded from Git
+├── chatbot.py              # Chatbot retrieval and answer logic
+├── crawler.py              # Website crawler for NeuralRays content
+├── ingest.py               # Chunking, embedding, and ChromaDB ingestion pipeline
+├── README.md               # Project documentation
+└── requirements.txt        # Python dependencies
 ```
 
 ## Setup Instructions
