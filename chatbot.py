@@ -93,6 +93,26 @@ def identify_intent(question: str) -> str:
     if any(word in question for word in ["contact", "email", "phone", "reach", "location", "office", "based"]):
         return "contact"
 
+    if any(
+        word in question
+        for word in [
+            "ceo",
+            "cbo",
+            "founder",
+            "team",
+            "core team",
+            "director",
+            "technical lead",
+            "technical director",
+            "finance executive",
+            "product director",
+            "qa lead",
+            "devops",
+            "devops architect",
+        ]
+    ):
+        return "team"
+
     if any(word in question for word in ["cloud", "migration", "cloud transformation"]):
         return "cloud"
 
@@ -128,6 +148,12 @@ def get_page_priority(intent: str, url: str, title: str) -> float:
     if intent == "contact":
         if "contact" in url or "contact" in title:
             return 4.0
+
+    if intent == "team":
+        if "about" in url or "about" in title:
+            return 5.0
+        if "contact" in url:
+            return -3.0
 
     if intent in {"ai_services", "automation"}:
         if "ai-services" in url or "ai services" in title:
@@ -226,6 +252,92 @@ def extract_relevant_sentences(text: str, question: str, max_sentences: int = 3)
     return " ".join(selected).strip()
 
 
+def answer_team_question(question: str) -> str:
+    """
+    Answer common team-related questions using known content from the crawled
+    Neural Rays About Us page.
+    """
+
+    question = normalise_question(question)
+
+    team_members = {
+        "ceo": {
+            "name": "Senthil Loganathan",
+            "role": "CEO",
+        },
+        "cbo": {
+            "name": "Srinivasan B Kada",
+            "role": "CBO",
+        },
+        "technical lead": {
+            "name": "Balaji Kalidhasan",
+            "role": "Technical Lead",
+        },
+        "technical director": {
+            "name": "Hemkumar Lakshminarayanan",
+            "role": "Technical Director",
+        },
+        "finance executive": {
+            "name": "Thilagavathi Ravikumar",
+            "role": "Finance Executive",
+        },
+        "product director": {
+            "name": "Anirban Bose",
+            "role": "Product Director",
+        },
+        "qa lead": {
+            "name": "Iswarya Selvam",
+            "role": "QA Lead",
+        },
+        "devops architect": {
+            "name": "Sathiyan Sivaprakasam",
+            "role": "DevOps Architect",
+        },
+    }
+
+    for role_key, details in team_members.items():
+        if role_key in question:
+            return (
+                f"According to the Neural Rays About Us page, the {details['role']} "
+                f"is {details['name']}.\n\n"
+                "Most relevant page: About Us – NeuralRays AI\n"
+                "Source: https://neuralrays.ai/about-us"
+            )
+
+    if "solutions director" in question or "solution director" in question:
+        return (
+            "According to the Neural Rays About Us page, the Solutions Directors "
+            "are Rajkumar Srinivasan and Satish Namburi.\n\n"
+            "Most relevant page: About Us – NeuralRays AI\n"
+            "Source: https://neuralrays.ai/about-us"
+        )
+
+    if "director" in question:
+        return (
+            "According to the Neural Rays About Us page, the listed directors include "
+            "Rajkumar Srinivasan and Satish Namburi as Solutions Directors, "
+            "Hemkumar Lakshminarayanan as Technical Director, and Anirban Bose as Product Director.\n\n"
+            "Most relevant page: About Us – NeuralRays AI\n"
+            "Source: https://neuralrays.ai/about-us"
+        )
+
+    return (
+        "The Neural Rays About Us page lists its core team as including:\n"
+        "- Rajkumar Srinivasan, Solutions Director\n"
+        "- Balaji Kalidhasan, Technical Lead\n"
+        "- Satish Namburi, Solutions Director\n"
+        "- Hemkumar Lakshminarayanan, Technical Director\n"
+        "- Thilagavathi Ravikumar, Finance Executive\n"
+        "- Anirban Bose, Product Director\n"
+        "- Iswarya Selvam, QA Lead\n"
+        "- Srinivasan B Kada, CBO\n"
+        "- Senthil Loganathan, CEO\n"
+        "- Sathiyan Sivaprakasam, DevOps Architect\n\n"
+        "Most relevant page: About Us – NeuralRays AI\n"
+        "Source: https://neuralrays.ai/about-us"
+    )
+
+
 class NeuralRaysChatbot:
     """
     Local RAG chatbot for the Neural Rays website.
@@ -311,6 +423,9 @@ class NeuralRaysChatbot:
                 "I could not find pricing information on the Neural Rays website. "
                 "You may want to contact Neural Rays directly for pricing or project-specific costs."
             )
+
+        if intent == "team":
+            return answer_team_question(question)
 
         if not chunks:
             return "I could not find that information on the Neural Rays website."
@@ -442,7 +557,7 @@ def get_chatbot() -> NeuralRaysChatbot:
 
 def answer_question(question: str) -> dict[str, Any]:
     """
-    Public function used by the terminal chatbot and later by FastAPI.
+    Public function used by the terminal chatbot and FastAPI.
     """
 
     chatbot = get_chatbot()
