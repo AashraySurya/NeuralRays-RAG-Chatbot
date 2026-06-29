@@ -16,6 +16,7 @@ The chatbot should be able to answer questions such as:
 - What AI services does NeuralRays offer?
 - Does NeuralRays offer cloud transformation?
 - How can I contact NeuralRays?
+- Who is the CEO of NeuralRays?
 - Does NeuralRays list pricing?
 
 ## Current Features
@@ -30,6 +31,9 @@ The chatbot should be able to answer questions such as:
 - Local retrieval-based chatbot logic
 - Basic answer generation using retrieved NeuralRays website content
 - Source URLs returned with chatbot answers
+- Handling for common website questions such as services, contact details, pricing, success stories, and team roles
+- FastAPI `/chat` API endpoint
+- Simple browser-based chatbot interface
 - GitHub feature branch workflow
 
 ## Tech Stack
@@ -66,6 +70,9 @@ NeuralRays-RAG-Chatbot/
 │   ├── chroma_db/          # Local ChromaDB vector database, ignored by Git
 │   └── pages.json          # Extracted NeuralRays website content
 │
+├── static/
+│   └── index.html          # Simple browser-based chatbot interface
+│
 ├── tests/
 │   └── sample_questions.md # Sample questions for testing the chatbot
 │
@@ -73,6 +80,7 @@ NeuralRays-RAG-Chatbot/
 │
 ├── .env.example            # Example environment variable file
 ├── .gitignore              # Files and folders excluded from Git
+├── app.py                  # FastAPI app and chatbot API endpoint
 ├── chatbot.py              # Chatbot retrieval and answer logic
 ├── crawler.py              # Website crawler for NeuralRays content
 ├── ingest.py               # Chunking, embedding, and ChromaDB ingestion pipeline
@@ -116,6 +124,20 @@ pip install -r requirements.txt
 ```
 
 ## Running the Project
+
+Before running the chatbot, make sure the virtual environment is activated.
+
+On Windows:
+
+```bash
+venv\Scripts\Activate
+```
+
+On Mac/Linux:
+
+```bash
+source venv/bin/activate
+```
 
 ### Step 1: Crawl the NeuralRays website
 
@@ -186,10 +208,64 @@ Does NeuralRays offer cloud transformation?
 How can I contact NeuralRays?
 ```
 
-To exit the chatbot, type:
+```text
+Who is the CEO of NeuralRays?
+```
+
+To exit the terminal chatbot, type:
 
 ```text
 exit
+```
+
+### Step 4: Run the chatbot in the browser
+
+The project also includes a simple browser-based chatbot interface using FastAPI.
+
+Run:
+
+```bash
+uvicorn app:app --reload
+```
+
+Then open this URL in your browser:
+
+```text
+http://127.0.0.1:8000
+```
+
+This will open the chatbot web interface.
+
+You can also access the FastAPI documentation here:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+The API endpoint is:
+
+```text
+POST /chat
+```
+
+Example request body:
+
+```json
+{
+  "question": "What AI services does NeuralRays offer?"
+}
+```
+
+Example response:
+
+```json
+{
+  "question": "What AI services does NeuralRays offer?",
+  "answer": "Neural Rays offers several AI services, including Data Strategy Consulting, Data Science and AI Consulting, AI Solution Development, and AI-Driven Automation.",
+  "sources": [
+    "https://neuralrays.ai/ai-services"
+  ]
+}
 ```
 
 ## Example Questions
@@ -211,7 +287,8 @@ Sample questions include:
 7. Are there any success stories or case studies?
 8. How can I contact NeuralRays?
 9. Where is NeuralRays located?
-10. Does NeuralRays list pricing on the website?
+10. Who is the CEO of NeuralRays?
+11. Does NeuralRays list pricing on the website?
 
 ## Notes About API Keys
 
@@ -264,32 +341,37 @@ git push origin main
 - Stored embeddings in ChromaDB
 - Built local chatbot retrieval logic
 - Improved chatbot answer relevance and formatting
+- Added handling for team and role-based questions
+- Added FastAPI API endpoint
+- Added simple browser-based chatbot interface
 
 ## Current Limitations
 
-- The chatbot currently uses rule-based/simple answer formatting rather than a full LLM generation layer.
-- The frontend/API layer is not yet complete.
+- The chatbot currently uses local embeddings and structured answer formatting rather than a full LLM generation layer.
 - The vector database is local and must be regenerated after cloning the repository.
 - The crawler is designed specifically for the NeuralRays website and may need updates if the website structure changes.
+- The browser interface is intentionally simple for prototype demonstration purposes.
 
 ## Planned Improvements
 
-- Add a FastAPI `/chat` endpoint
-- Add a simple chatbot interface
-- Improve answer generation with an LLM
-- Add stronger fallback handling when information is not found
+- Integrate a selected LLM provider once an API key or preferred model is confirmed
+- Improve fallback handling when information is not found on the website
 - Add automated testing using the sample questions
-- Improve README with demo instructions
+- Improve the browser interface styling and user experience
+- Add more detailed evaluation of retrieval accuracy
 - Prepare final demonstration flow
 
 ## Demo Flow
 
 For demonstration, the project can be shown in this order:
 
-1. Show the website crawler
-2. Show `data/pages.json`
-3. Run the ingestion pipeline
-4. Show ChromaDB vector database generation
-5. Run the chatbot in the terminal
-6. Ask sample questions
-7. Show retrieved answers and source URLs
+1. Show the website crawler in `crawler.py`
+2. Run `python crawler.py`
+3. Show the extracted content in `data/pages.json`
+4. Run `python ingest.py`
+5. Show that ChromaDB is generated locally in `data/chroma_db/`
+6. Run the terminal chatbot using `python chatbot.py`
+7. Run the browser chatbot using `uvicorn app:app --reload`
+8. Open `http://127.0.0.1:8000`
+9. Ask sample questions through the browser interface
+10. Show that answers include relevant NeuralRays website source URLs
