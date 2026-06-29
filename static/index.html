@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Neural Rays RAG Chatbot</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #1f2933;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #111827;
+    }
+
+    .subtitle {
+      color: #5f6b7a;
+      margin-bottom: 24px;
+    }
+
+    .chat-window {
+      border: 1px solid #d9e2ec;
+      border-radius: 10px;
+      padding: 16px;
+      height: 420px;
+      overflow-y: auto;
+      background: #fbfdff;
+      margin-bottom: 16px;
+    }
+
+    .message {
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .user {
+      font-weight: bold;
+      color: #0f4c81;
+    }
+
+    .bot {
+      font-weight: bold;
+      color: #157347;
+    }
+
+    .answer-box {
+      margin-top: 6px;
+      white-space: pre-wrap;
+    }
+
+    .sources {
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .sources a {
+      display: block;
+      color: #0f4c81;
+      text-decoration: none;
+      margin-top: 4px;
+    }
+
+    .sources a:hover {
+      text-decoration: underline;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 12px 18px;
+      background: #0f4c81;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0b3a63;
+    }
+
+    button:disabled {
+      background: #9aa6b2;
+      cursor: not-allowed;
+    }
+
+    .examples {
+      margin-top: 16px;
+      font-size: 0.95rem;
+      color: #5f6b7a;
+    }
+
+    .example-button {
+      margin: 6px 6px 0 0;
+      padding: 8px 10px;
+      background: #e8f1fa;
+      color: #0f4c81;
+      border: 1px solid #bdd7ee;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .example-button:hover {
+      background: #d9eaf8;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Neural Rays RAG Chatbot</h1>
+
+      <p class="subtitle">
+        Ask a question about Neural Rays AI. The chatbot answers using information retrieved from the Neural Rays website.
+      </p>
+
+      <div id="chatWindow" class="chat-window">
+        <div class="message">
+          <span class="bot">Bot:</span>
+          <div class="answer-box">
+            Hello. Ask me something about Neural Rays AI services, success stories, contact details, or company information.
+          </div>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <input
+          id="questionInput"
+          type="text"
+          placeholder="Ask a question about Neural Rays..."
+          onkeydown="handleKeyDown(event)"
+        />
+        <button id="sendButton" onclick="sendQuestion()">Send</button>
+      </div>
+
+      <div class="examples">
+        Try:
+        <button class="example-button" onclick="useExample('What AI services does Neural Rays offer?')">
+          AI services
+        </button>
+        <button class="example-button" onclick="useExample('Does Neural Rays offer cloud transformation?')">
+          Cloud transformation
+        </button>
+        <button class="example-button" onclick="useExample('How can I contact Neural Rays?')">
+          Contact details
+        </button>
+        <button class="example-button" onclick="useExample('Does Neural Rays list pricing?')">
+          Pricing
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const chatWindow = document.getElementById("chatWindow");
+    const questionInput = document.getElementById("questionInput");
+    const sendButton = document.getElementById("sendButton");
+
+    function appendMessage(sender, text, sources = []) {
+      const message = document.createElement("div");
+      message.className = "message";
+
+      const senderClass = sender === "You" ? "user" : "bot";
+
+      let sourcesHtml = "";
+
+      if (sources.length > 0) {
+        sourcesHtml = `
+          <div class="sources">
+            <strong>Sources:</strong>
+            ${sources.slice(0, 3).map(source => `
+              <a href="${source}" target="_blank">${source}</a>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      message.innerHTML = `
+        <span class="${senderClass}">${sender}:</span>
+        <div class="answer-box">${escapeHtml(text)}</div>
+        ${sourcesHtml}
+      `;
+
+      chatWindow.appendChild(message);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    async function sendQuestion() {
+      const question = questionInput.value.trim();
+
+      if (!question) {
+        return;
+      }
+
+      appendMessage("You", question);
+      questionInput.value = "";
+      sendButton.disabled = true;
+      sendButton.textContent = "Thinking...";
+
+      try {
+        const response = await fetch("/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ question }),
+        });
+
+        if (!response.ok) {
+          throw new Error("API request failed.");
+        }
+
+        const data = await response.json();
+
+        appendMessage("Bot", data.answer, data.sources);
+      } catch (error) {
+        appendMessage(
+          "Bot",
+          "Sorry, something went wrong. Please make sure the API server is running and the vector database has been created."
+        );
+      } finally {
+        sendButton.disabled = false;
+        sendButton.textContent = "Send";
+        questionInput.focus();
+      }
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === "Enter") {
+        sendQuestion();
+      }
+    }
+
+    function useExample(question) {
+      questionInput.value = question;
+      sendQuestion();
+    }
+  </script>
+</body>
+</html>
