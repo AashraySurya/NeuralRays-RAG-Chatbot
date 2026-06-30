@@ -94,14 +94,16 @@ def identify_intent(question: str) -> str:
         return "contact"
 
     if any(
-        word in question
-        for word in [
+        phrase in question
+        for phrase in [
             "ceo",
             "cbo",
             "founder",
             "team",
             "core team",
             "director",
+            "solutions director",
+            "solution director",
             "technical lead",
             "technical director",
             "finance executive",
@@ -109,6 +111,30 @@ def identify_intent(question: str) -> str:
             "qa lead",
             "devops",
             "devops architect",
+            "who is",
+            "whoo is",
+            "who are",
+
+            # Team member names
+            "rajkumar",
+            "rajkumar srinivasan",
+            "balaji",
+            "balaji kalidhasan",
+            "satish",
+            "satish namburi",
+            "hemkumar",
+            "hemkumar lakshminarayanan",
+            "thilagavathi",
+            "thilagavathi ravikumar",
+            "anirban",
+            "anirban bose",
+            "iswarya",
+            "iswarya selvam",
+            "srinivasan b kada",
+            "senthil",
+            "senthil loganathan",
+            "sathiyan",
+            "sathiyan sivaprakasam",
         ]
     ):
         return "team"
@@ -260,50 +286,91 @@ def answer_team_question(question: str) -> str:
 
     question = normalise_question(question)
 
-    team_members = {
-        "ceo": {
-            "name": "Senthil Loganathan",
-            "role": "CEO",
+    people = [
+        {
+            "name": "Rajkumar Srinivasan",
+            "role": "Solutions Director",
+            "matches": ["rajkumar", "rajkumar srinivasan"],
         },
-        "cbo": {
-            "name": "Srinivasan B Kada",
-            "role": "CBO",
-        },
-        "technical lead": {
+        {
             "name": "Balaji Kalidhasan",
             "role": "Technical Lead",
+            "matches": ["balaji", "balaji kalidhasan"],
         },
-        "technical director": {
+        {
+            "name": "Satish Namburi",
+            "role": "Solutions Director",
+            "matches": ["satish", "satish namburi"],
+        },
+        {
             "name": "Hemkumar Lakshminarayanan",
             "role": "Technical Director",
+            "matches": ["hemkumar", "hemkumar lakshminarayanan"],
         },
-        "finance executive": {
+        {
             "name": "Thilagavathi Ravikumar",
             "role": "Finance Executive",
+            "matches": ["thilagavathi", "thilagavathi ravikumar", "ravikumar"],
         },
-        "product director": {
+        {
             "name": "Anirban Bose",
             "role": "Product Director",
+            "matches": ["anirban", "anirban bose"],
         },
-        "qa lead": {
+        {
             "name": "Iswarya Selvam",
             "role": "QA Lead",
+            "matches": ["iswarya", "iswarya selvam"],
         },
-        "devops architect": {
+        {
+            "name": "Srinivasan B Kada",
+            "role": "CBO",
+            "matches": ["srinivasan b kada", "kada"],
+        },
+        {
+            "name": "Senthil Loganathan",
+            "role": "CEO",
+            "matches": ["senthil", "senthil loganathan"],
+        },
+        {
             "name": "Sathiyan Sivaprakasam",
             "role": "DevOps Architect",
+            "matches": ["sathiyan", "sathiyan sivaprakasam", "sivaprakasam"],
         },
+    ]
+
+    role_answers = {
+        "ceo": ("CEO", "Senthil Loganathan"),
+        "cbo": ("CBO", "Srinivasan B Kada"),
+        "technical lead": ("Technical Lead", "Balaji Kalidhasan"),
+        "technical director": ("Technical Director", "Hemkumar Lakshminarayanan"),
+        "finance executive": ("Finance Executive", "Thilagavathi Ravikumar"),
+        "product director": ("Product Director", "Anirban Bose"),
+        "qa lead": ("QA Lead", "Iswarya Selvam"),
+        "devops architect": ("DevOps Architect", "Sathiyan Sivaprakasam"),
     }
 
-    for role_key, details in team_members.items():
-        if role_key in question:
+    # First, handle questions about a specific person
+    for person in people:
+        if any(match in question for match in person["matches"]):
             return (
-                f"According to the Neural Rays About Us page, the {details['role']} "
-                f"is {details['name']}.\n\n"
+                f"According to the Neural Rays About Us page, {person['name']} "
+                f"is the {person['role']}.\n\n"
                 "Most relevant page: About Us – NeuralRays AI\n"
                 "Source: https://neuralrays.ai/about-us"
             )
 
+    # Then, handle questions about a specific role
+    for role_key, (role_title, name) in role_answers.items():
+        if role_key in question:
+            return (
+                f"According to the Neural Rays About Us page, the {role_title} "
+                f"is {name}.\n\n"
+                "Most relevant page: About Us – NeuralRays AI\n"
+                "Source: https://neuralrays.ai/about-us"
+            )
+
+    # Handle Solutions Director separately because there are two
     if "solutions director" in question or "solution director" in question:
         return (
             "According to the Neural Rays About Us page, the Solutions Directors "
@@ -312,27 +379,26 @@ def answer_team_question(question: str) -> str:
             "Source: https://neuralrays.ai/about-us"
         )
 
-    if "director" in question:
+    # Only list everyone if the user asks a broad team question
+    if any(phrase in question for phrase in ["team", "core team", "who works", "people", "members"]):
         return (
-            "According to the Neural Rays About Us page, the listed directors include "
-            "Rajkumar Srinivasan and Satish Namburi as Solutions Directors, "
-            "Hemkumar Lakshminarayanan as Technical Director, and Anirban Bose as Product Director.\n\n"
+            "The Neural Rays About Us page lists its core team as:\n"
+            "- Rajkumar Srinivasan, Solutions Director\n"
+            "- Balaji Kalidhasan, Technical Lead\n"
+            "- Satish Namburi, Solutions Director\n"
+            "- Hemkumar Lakshminarayanan, Technical Director\n"
+            "- Thilagavathi Ravikumar, Finance Executive\n"
+            "- Anirban Bose, Product Director\n"
+            "- Iswarya Selvam, QA Lead\n"
+            "- Srinivasan B Kada, CBO\n"
+            "- Senthil Loganathan, CEO\n"
+            "- Sathiyan Sivaprakasam, DevOps Architect\n\n"
             "Most relevant page: About Us – NeuralRays AI\n"
             "Source: https://neuralrays.ai/about-us"
         )
 
     return (
-        "The Neural Rays About Us page lists its core team as including:\n"
-        "- Rajkumar Srinivasan, Solutions Director\n"
-        "- Balaji Kalidhasan, Technical Lead\n"
-        "- Satish Namburi, Solutions Director\n"
-        "- Hemkumar Lakshminarayanan, Technical Director\n"
-        "- Thilagavathi Ravikumar, Finance Executive\n"
-        "- Anirban Bose, Product Director\n"
-        "- Iswarya Selvam, QA Lead\n"
-        "- Srinivasan B Kada, CBO\n"
-        "- Senthil Loganathan, CEO\n"
-        "- Sathiyan Sivaprakasam, DevOps Architect\n\n"
+        "I could not identify that specific person or role from the Neural Rays About Us page.\n\n"
         "Most relevant page: About Us – NeuralRays AI\n"
         "Source: https://neuralrays.ai/about-us"
     )
