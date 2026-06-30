@@ -4,224 +4,492 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Neural Rays RAG Chatbot</title>
+  <title>NeuralRays Chatbot Widget</title>
 
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      color: #1f2933;
+    :root {
+      --nr-primary: #1657c8;
+      --nr-secondary: #2f9bff;
+      --nr-aqua: #bff4f6;
+      --nr-light-aqua: #ecfbfc;
+      --nr-dark: #102033;
+      --nr-muted: #607086;
+      --nr-border: #d8e9ef;
+      --nr-white: #ffffff;
+      --nr-success: #12b76a;
+      --nr-shadow: 0 20px 50px rgba(16, 32, 51, 0.22);
     }
 
-    .container {
-      max-width: 850px;
-      margin: 40px auto;
-      padding: 0 20px;
+    /*
+      Only chatbot classes are styled.
+      This avoids changing the rest of the website page.
+    */
+
+    .nr-chat-launcher {
+      position: fixed;
+      right: 28px;
+      bottom: 28px;
+      width: 68px;
+      height: 68px;
+      border: none;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--nr-primary), var(--nr-secondary));
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 14px 32px rgba(22, 87, 200, 0.35);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .card {
-      background: white;
+    .nr-chat-launcher:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 40px rgba(22, 87, 200, 0.42);
+    }
+
+    .nr-chat-panel {
+      position: fixed;
+      right: 28px;
+      bottom: 110px;
+      width: 410px;
+      height: 620px;
+      max-height: calc(100vh - 140px);
+      background: var(--nr-white);
+      border: 1px solid var(--nr-border);
+      border-radius: 24px;
+      box-shadow: var(--nr-shadow);
+      z-index: 9998;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--nr-dark);
+    }
+
+    .nr-chat-panel.open {
+      display: flex;
+    }
+
+    .nr-chat-header {
+      padding: 18px 20px;
+      background:
+        radial-gradient(circle at top right, rgba(47, 155, 255, 0.22), transparent 35%),
+        linear-gradient(135deg, var(--nr-aqua), #ffffff);
+      border-bottom: 1px solid var(--nr-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .nr-chat-brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .nr-chat-logo {
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      background: linear-gradient(135deg, var(--nr-primary), var(--nr-secondary));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 18px rgba(22, 87, 200, 0.25);
+      flex-shrink: 0;
     }
 
-    h1 {
-      margin-top: 0;
-      color: #111827;
+    .nr-chat-title h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.2;
+      color: var(--nr-dark);
     }
 
-    .subtitle {
-      color: #5f6b7a;
-      margin-bottom: 24px;
+    .nr-chat-title p {
+      margin: 4px 0 0;
+      color: var(--nr-muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
     }
 
-    .chat-window {
-      border: 1px solid #d9e2ec;
-      border-radius: 10px;
-      padding: 16px;
-      height: 420px;
+    .nr-chat-close {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(216, 233, 239, 0.9);
+      color: var(--nr-dark);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .nr-chat-status {
+      padding: 8px 20px;
+      background: #f7fdff;
+      border-bottom: 1px solid var(--nr-border);
+      color: #087443;
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nr-status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--nr-success);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(18, 183, 106, 0.12);
+    }
+
+    .nr-chat-window {
+      flex: 1;
       overflow-y: auto;
-      background: #fbfdff;
+      padding: 18px;
+      background: linear-gradient(180deg, #fbfeff, #f5fbff);
+    }
+
+    .nr-message {
       margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
-    .message {
-      margin-bottom: 18px;
+    .nr-message.user {
+      align-items: flex-end;
+    }
+
+    .nr-message.bot {
+      align-items: flex-start;
+    }
+
+    .nr-message-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .nr-message.user .nr-message-label {
+      color: var(--nr-primary);
+    }
+
+    .nr-message.bot .nr-message-label {
+      color: #087443;
+    }
+
+    .nr-bubble {
+      max-width: 88%;
+      padding: 12px 14px;
+      border-radius: 16px;
       line-height: 1.5;
-    }
-
-    .user {
-      font-weight: bold;
-      color: #0f4c81;
-    }
-
-    .bot {
-      font-weight: bold;
-      color: #157347;
-    }
-
-    .answer-box {
-      margin-top: 6px;
+      font-size: 0.9rem;
       white-space: pre-wrap;
     }
 
-    .sources {
-      margin-top: 10px;
-      font-size: 0.9rem;
+    .nr-message.user .nr-bubble {
+      color: white;
+      background: linear-gradient(135deg, var(--nr-primary), var(--nr-secondary));
+      border-bottom-right-radius: 5px;
     }
 
-    .sources a {
+    .nr-message.bot .nr-bubble {
+      color: var(--nr-dark);
+      background: white;
+      border: 1px solid var(--nr-border);
+      border-bottom-left-radius: 5px;
+    }
+
+    .nr-sources {
+      max-width: 88%;
+      margin-top: 4px;
+      background: #f0f8ff;
+      border: 1px solid #d6ebff;
+      border-radius: 12px;
+      padding: 9px 11px;
+      font-size: 0.78rem;
+    }
+
+    .nr-sources strong {
       display: block;
-      color: #0f4c81;
+      margin-bottom: 5px;
+      color: var(--nr-dark);
+    }
+
+    .nr-sources a {
+      display: block;
+      color: var(--nr-primary);
       text-decoration: none;
       margin-top: 4px;
+      word-break: break-word;
     }
 
-    .sources a:hover {
+    .nr-sources a:hover {
       text-decoration: underline;
     }
 
-    .input-row {
+    .nr-quick-prompts {
       display: flex;
-      gap: 10px;
+      flex-wrap: wrap;
+      gap: 7px;
+      padding: 12px 16px;
+      background: #ffffff;
+      border-top: 1px solid var(--nr-border);
     }
 
-    input {
-      flex: 1;
-      padding: 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-    button {
-      padding: 12px 18px;
-      background: #0f4c81;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #0b3a63;
-    }
-
-    button:disabled {
-      background: #9aa6b2;
-      cursor: not-allowed;
-    }
-
-    .examples {
-      margin-top: 16px;
-      font-size: 0.95rem;
-      color: #5f6b7a;
-    }
-
-    .example-button {
-      margin: 6px 6px 0 0;
+    .nr-quick-prompts button {
+      border: 1px solid #cfe5ff;
+      background: #f4faff;
+      color: var(--nr-primary);
+      font-weight: 700;
+      border-radius: 999px;
       padding: 8px 10px;
-      background: #e8f1fa;
-      color: #0f4c81;
-      border: 1px solid #bdd7ee;
-      border-radius: 8px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.76rem;
     }
 
-    .example-button:hover {
-      background: #d9eaf8;
+    .nr-quick-prompts button:hover {
+      background: #e8f4ff;
+    }
+
+    .nr-chat-input-area {
+      padding: 14px 16px 16px;
+      background: #ffffff;
+      border-top: 1px solid var(--nr-border);
+    }
+
+    .nr-chat-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .nr-chat-input-row input {
+      flex: 1;
+      border: 1px solid #cfe0ec;
+      border-radius: 14px;
+      padding: 12px 13px;
+      font-size: 0.9rem;
+      color: var(--nr-dark);
+      outline: none;
+      background: #fbfdff;
+    }
+
+    .nr-chat-input-row input:focus {
+      border-color: var(--nr-secondary);
+      box-shadow: 0 0 0 4px rgba(47, 155, 255, 0.12);
+    }
+
+    .nr-chat-input-row button {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, var(--nr-primary), var(--nr-secondary));
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      min-width: 78px;
+      box-shadow: 0 8px 18px rgba(22, 87, 200, 0.22);
+    }
+
+    .nr-chat-input-row button:disabled {
+      background: #9fb5cc;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .nr-small-note {
+      margin-top: 8px;
+      color: var(--nr-muted);
+      font-size: 0.72rem;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 520px) {
+      .nr-chat-panel {
+        right: 12px;
+        left: 12px;
+        bottom: 92px;
+        width: auto;
+        height: 620px;
+        max-height: calc(100vh - 115px);
+      }
+
+      .nr-chat-launcher {
+        right: 18px;
+        bottom: 18px;
+      }
+
+      .nr-bubble,
+      .nr-sources {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="card">
-      <h1>Neural Rays RAG Chatbot</h1>
+  <!-- Floating chatbot button -->
+  <button class="nr-chat-launcher" id="nrChatLauncher" onclick="toggleChat()">
+    NR
+  </button>
 
-      <p class="subtitle">
-        Ask a question about Neural Rays AI. The chatbot answers using information retrieved from the Neural Rays website.
-      </p>
+  <!-- Chatbot pop-up widget -->
+  <section class="nr-chat-panel" id="nrChatPanel">
+    <div class="nr-chat-header">
+      <div class="nr-chat-brand">
+        <div class="nr-chat-logo">NR</div>
 
-      <div id="chatWindow" class="chat-window">
-        <div class="message">
-          <span class="bot">Bot:</span>
-          <div class="answer-box">
-            Hello. Ask me something about Neural Rays AI services, success stories, contact details, or company information.
-          </div>
+        <div class="nr-chat-title">
+          <h2>NeuralRays Chatbot</h2>
+          <p>Ask about services, team, contact details, success stories, and more.</p>
         </div>
       </div>
 
-      <div class="input-row">
+      <button class="nr-chat-close" onclick="toggleChat()">×</button>
+    </div>
+
+    <div class="nr-chat-status">
+      <span class="nr-status-dot"></span>
+      Local RAG active
+    </div>
+
+    <div id="chatWindow" class="nr-chat-window">
+      <div class="nr-message bot">
+        <div class="nr-message-label">Bot</div>
+        <div class="nr-bubble">
+Hello. I can answer questions using information retrieved from the NeuralRays website.
+
+Try asking:
+- What does NeuralRays do?
+- What AI services does NeuralRays offer?
+- How can I contact NeuralRays?
+        </div>
+      </div>
+    </div>
+
+    <div class="nr-quick-prompts">
+      <button onclick="useExample('What does NeuralRays do?')">What does NeuralRays do?</button>
+      <button onclick="useExample('What AI services does NeuralRays offer?')">AI services</button>
+      <button onclick="useExample('Does NeuralRays offer cloud transformation?')">Cloud transformation</button>
+      <button onclick="useExample('Who is the CEO of NeuralRays?')">CEO</button>
+      <button onclick="useExample('How can I contact NeuralRays?')">Contact</button>
+      <button onclick="useExample('Does NeuralRays list pricing?')">Pricing</button>
+    </div>
+
+    <div class="nr-chat-input-area">
+      <div class="nr-chat-input-row">
         <input
           id="questionInput"
           type="text"
-          placeholder="Ask a question about Neural Rays..."
+          placeholder="Type your question..."
+          autocomplete="off"
           onkeydown="handleKeyDown(event)"
         />
         <button id="sendButton" onclick="sendQuestion()">Send</button>
       </div>
 
-      <div class="examples">
-        Try:
-        <button class="example-button" onclick="useExample('What AI services does Neural Rays offer?')">
-          AI services
-        </button>
-        <button class="example-button" onclick="useExample('Does Neural Rays offer cloud transformation?')">
-          Cloud transformation
-        </button>
-        <button class="example-button" onclick="useExample('How can I contact Neural Rays?')">
-          Contact details
-        </button>
-        <button class="example-button" onclick="useExample('Does Neural Rays list pricing?')">
-          Pricing
-        </button>
+      <div class="nr-small-note">
+        Answers are generated from retrieved NeuralRays website content and include source URLs where available.
       </div>
     </div>
-  </div>
+  </section>
 
   <script>
+    const chatPanel = document.getElementById("nrChatPanel");
+    const chatLauncher = document.getElementById("nrChatLauncher");
     const chatWindow = document.getElementById("chatWindow");
     const questionInput = document.getElementById("questionInput");
     const sendButton = document.getElementById("sendButton");
 
-    function appendMessage(sender, text, sources = []) {
-      const message = document.createElement("div");
-      message.className = "message";
+    function toggleChat() {
+      chatPanel.classList.toggle("open");
 
-      const senderClass = sender === "You" ? "user" : "bot";
-
-      let sourcesHtml = "";
-
-      if (sources.length > 0) {
-        sourcesHtml = `
-          <div class="sources">
-            <strong>Sources:</strong>
-            ${sources.slice(0, 3).map(source => `
-              <a href="${source}" target="_blank">${source}</a>
-            `).join("")}
-          </div>
-        `;
+      if (chatPanel.classList.contains("open")) {
+        questionInput.focus();
       }
-
-      message.innerHTML = `
-        <span class="${senderClass}">${sender}:</span>
-        <div class="answer-box">${escapeHtml(text)}</div>
-        ${sourcesHtml}
-      `;
-
-      chatWindow.appendChild(message);
-      chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
     function escapeHtml(text) {
       const div = document.createElement("div");
       div.textContent = text;
       return div.innerHTML;
+    }
+
+    function appendMessage(sender, text, sources = []) {
+      const message = document.createElement("div");
+      const isUser = sender === "You";
+
+      message.className = isUser ? "nr-message user" : "nr-message bot";
+
+      const label = document.createElement("div");
+      label.className = "nr-message-label";
+      label.textContent = sender;
+
+      const bubble = document.createElement("div");
+      bubble.className = "nr-bubble";
+      bubble.innerHTML = escapeHtml(text);
+
+      message.appendChild(label);
+      message.appendChild(bubble);
+
+      if (!isUser && sources.length > 0) {
+        const sourcesBox = document.createElement("div");
+        sourcesBox.className = "nr-sources";
+
+        const title = document.createElement("strong");
+        title.textContent = "Sources";
+        sourcesBox.appendChild(title);
+
+        sources.slice(0, 3).forEach((source) => {
+          const link = document.createElement("a");
+          link.href = source;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = source;
+          sourcesBox.appendChild(link);
+        });
+
+        message.appendChild(sourcesBox);
+      }
+
+      chatWindow.appendChild(message);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    function appendLoadingMessage() {
+      const loading = document.createElement("div");
+      loading.className = "nr-message bot";
+      loading.id = "loadingMessage";
+
+      loading.innerHTML = `
+        <div class="nr-message-label">Bot</div>
+        <div class="nr-bubble">Thinking...</div>
+      `;
+
+      chatWindow.appendChild(loading);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    function removeLoadingMessage() {
+      const loading = document.getElementById("loadingMessage");
+
+      if (loading) {
+        loading.remove();
+      }
     }
 
     async function sendQuestion() {
@@ -233,8 +501,11 @@
 
       appendMessage("You", question);
       questionInput.value = "";
+      questionInput.focus();
+
       sendButton.disabled = true;
       sendButton.textContent = "Thinking...";
+      appendLoadingMessage();
 
       try {
         const response = await fetch("/chat", {
@@ -251,16 +522,17 @@
 
         const data = await response.json();
 
-        appendMessage("Bot", data.answer, data.sources);
+        removeLoadingMessage();
+        appendMessage("Bot", data.answer, data.sources || []);
       } catch (error) {
+        removeLoadingMessage();
         appendMessage(
           "Bot",
-          "Sorry, something went wrong. Please make sure the API server is running and the vector database has been created."
+          "Sorry, something went wrong. Please check that the FastAPI server is running and that the ChromaDB vector database has been created by running python ingest.py."
         );
       } finally {
         sendButton.disabled = false;
         sendButton.textContent = "Send";
-        questionInput.focus();
       }
     }
 
@@ -271,6 +543,10 @@
     }
 
     function useExample(question) {
+      if (!chatPanel.classList.contains("open")) {
+        chatPanel.classList.add("open");
+      }
+
       questionInput.value = question;
       sendQuestion();
     }
