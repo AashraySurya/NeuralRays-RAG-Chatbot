@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- 
+
   <title>NeuralRays Chatbot Widget</title>
- 
+
   <style>
     :root {
       --nr-primary: #1657c8;
@@ -19,38 +19,43 @@
       --nr-success: #12b76a;
       --nr-shadow: 0 20px 50px rgba(16, 32, 51, 0.22);
     }
- 
+
     /*
       Only chatbot classes are styled.
       This avoids changing the rest of the website page.
     */
- 
+
     .nr-chat-launcher {
       position: fixed;
       right: 28px;
       bottom: 28px;
-      width: 68px;
-      height: 68px;
+      width: 74px;
+      height: 74px;
       border: none;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--nr-primary), var(--nr-secondary));
-      color: white;
-      font-size: 1.5rem;
-      font-weight: 800;
+      border-radius: 18px;
+      background: #dff8f9;
       cursor: pointer;
-      box-shadow: 0 14px 32px rgba(22, 87, 200, 0.35);
+      box-shadow: 0 14px 32px rgba(22, 87, 200, 0.22);
       z-index: 9999;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
+      padding: 10px;
     }
- 
+
     .nr-chat-launcher:hover {
       transform: translateY(-3px);
-      box-shadow: 0 18px 40px rgba(22, 87, 200, 0.42);
+      box-shadow: 0 18px 40px rgba(22, 87, 200, 0.28);
     }
- 
+
+    .nr-chat-launcher-icon {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
     .nr-chat-panel {
       position: fixed;
       right: 28px;
@@ -69,11 +74,11 @@
       font-family: Arial, Helvetica, sans-serif;
       color: var(--nr-dark);
     }
- 
+
     .nr-chat-panel.open {
       display: flex;
     }
- 
+
     .nr-chat-header {
       padding: 18px 20px;
       background:
@@ -85,42 +90,47 @@
       align-items: flex-start;
       gap: 14px;
     }
- 
+
     .nr-chat-brand {
       display: flex;
       gap: 12px;
       align-items: center;
     }
- 
+
     .nr-chat-logo {
       width: 42px;
       height: 42px;
       border-radius: 12px;
-      background: linear-gradient(135deg, var(--nr-primary), var(--nr-secondary));
-      color: white;
+      background: #dff8f9;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 0.95rem;
-      box-shadow: 0 8px 18px rgba(22, 87, 200, 0.25);
+      box-shadow: 0 8px 18px rgba(22, 87, 200, 0.18);
       flex-shrink: 0;
+      padding: 6px;
     }
- 
+
+    .nr-chat-header-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
     .nr-chat-title h2 {
       margin: 0;
       font-size: 1.05rem;
       line-height: 1.2;
       color: var(--nr-dark);
     }
- 
+
     .nr-chat-title p {
       margin: 4px 0 0;
       color: var(--nr-muted);
       font-size: 0.78rem;
       line-height: 1.35;
     }
- 
+
     .nr-chat-close {
       background: rgba(255, 255, 255, 0.8);
       border: 1px solid rgba(216, 233, 239, 0.9);
@@ -133,7 +143,7 @@
       line-height: 1;
       flex-shrink: 0;
     }
- 
+
     .nr-chat-status {
       padding: 8px 20px;
       background: #f7fdff;
@@ -145,7 +155,7 @@
       align-items: center;
       gap: 8px;
     }
- 
+
     .nr-status-dot {
       width: 8px;
       height: 8px;
@@ -153,44 +163,44 @@
       border-radius: 50%;
       box-shadow: 0 0 0 4px rgba(18, 183, 106, 0.12);
     }
- 
+
     .nr-chat-window {
       flex: 1;
       overflow-y: auto;
       padding: 18px;
       background: linear-gradient(180deg, #fbfeff, #f5fbff);
     }
- 
+
     .nr-message {
       margin-bottom: 16px;
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
- 
+
     .nr-message.user {
       align-items: flex-end;
     }
- 
+
     .nr-message.bot {
       align-items: flex-start;
     }
- 
+
     .nr-message-label {
       font-size: 0.7rem;
       font-weight: 800;
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
- 
+
     .nr-message.user .nr-message-label {
       color: var(--nr-primary);
     }
- 
+
     .nr-message.bot .nr-message-label {
       color: #087443;
     }
- 
+
     .nr-bubble {
       max-width: 88%;
       padding: 12px 14px;
@@ -199,20 +209,20 @@
       font-size: 0.9rem;
       white-space: pre-wrap;
     }
- 
+
     .nr-message.user .nr-bubble {
       color: white;
       background: linear-gradient(135deg, var(--nr-primary), var(--nr-secondary));
       border-bottom-right-radius: 5px;
     }
- 
+
     .nr-message.bot .nr-bubble {
       color: var(--nr-dark);
       background: white;
       border: 1px solid var(--nr-border);
       border-bottom-left-radius: 5px;
     }
- 
+
     .nr-sources {
       max-width: 88%;
       margin-top: 4px;
@@ -222,13 +232,13 @@
       padding: 9px 11px;
       font-size: 0.78rem;
     }
- 
+
     .nr-sources strong {
       display: block;
       margin-bottom: 5px;
       color: var(--nr-dark);
     }
- 
+
     .nr-sources a {
       display: block;
       color: var(--nr-primary);
@@ -236,11 +246,11 @@
       margin-top: 4px;
       word-break: break-word;
     }
- 
+
     .nr-sources a:hover {
       text-decoration: underline;
     }
- 
+
     .nr-quick-prompts {
       display: flex;
       flex-wrap: wrap;
@@ -249,7 +259,7 @@
       background: #ffffff;
       border-top: 1px solid var(--nr-border);
     }
- 
+
     .nr-quick-prompts button {
       border: 1px solid #cfe5ff;
       background: #f4faff;
@@ -260,23 +270,23 @@
       cursor: pointer;
       font-size: 0.76rem;
     }
- 
+
     .nr-quick-prompts button:hover {
       background: #e8f4ff;
     }
- 
+
     .nr-chat-input-area {
       padding: 14px 16px 16px;
       background: #ffffff;
       border-top: 1px solid var(--nr-border);
     }
- 
+
     .nr-chat-input-row {
       display: flex;
       gap: 8px;
       align-items: center;
     }
- 
+
     .nr-chat-input-row input {
       flex: 1;
       border: 1px solid #cfe0ec;
@@ -287,12 +297,12 @@
       outline: none;
       background: #fbfdff;
     }
- 
+
     .nr-chat-input-row input:focus {
       border-color: var(--nr-secondary);
       box-shadow: 0 0 0 4px rgba(47, 155, 255, 0.12);
     }
- 
+
     .nr-chat-input-row button {
       border: none;
       border-radius: 14px;
@@ -304,20 +314,20 @@
       min-width: 78px;
       box-shadow: 0 8px 18px rgba(22, 87, 200, 0.22);
     }
- 
+
     .nr-chat-input-row button:disabled {
       background: #9fb5cc;
       cursor: not-allowed;
       box-shadow: none;
     }
- 
+
     .nr-small-note {
       margin-top: 8px;
       color: var(--nr-muted);
       font-size: 0.72rem;
       line-height: 1.35;
     }
- 
+
     @media (max-width: 520px) {
       .nr-chat-panel {
         right: 12px;
@@ -327,12 +337,14 @@
         height: 620px;
         max-height: calc(100vh - 115px);
       }
- 
+
       .nr-chat-launcher {
         right: 18px;
         bottom: 18px;
+        width: 68px;
+        height: 68px;
       }
- 
+
       .nr-bubble,
       .nr-sources {
         max-width: 100%;
@@ -340,39 +352,49 @@
     }
   </style>
 </head>
- 
+
 <body>
   <!-- Floating chatbot button: opens the chat, and closes+refreshes it if already open -->
   <button class="nr-chat-launcher" id="nrChatLauncher" onclick="toggleChat()">
-    NR
+    <img
+      src="/static/nr-logo.png"
+      alt="Open NeuralRays chatbot"
+      class="nr-chat-launcher-icon"
+    />
   </button>
- 
+
   <!-- Chatbot pop-up widget -->
   <section class="nr-chat-panel" id="nrChatPanel">
     <div class="nr-chat-header">
       <div class="nr-chat-brand">
-        <div class="nr-chat-logo">NR</div>
- 
+        <div class="nr-chat-logo">
+          <img
+            src="/static/nr-logo.png"
+            alt="NeuralRays logo"
+            class="nr-chat-header-logo"
+          />
+        </div>
+
         <div class="nr-chat-title">
           <h2>NeuralRays Chatbot</h2>
           <p>Ask about services, team, contact details, success stories, and more.</p>
         </div>
       </div>
- 
+
       <button class="nr-chat-close" onclick="closeChat()">×</button>
     </div>
- 
+
     <div class="nr-chat-status">
       <span class="nr-status-dot"></span>
       Local RAG active
     </div>
- 
+
     <div id="chatWindow" class="nr-chat-window">
       <div class="nr-message bot">
         <div class="nr-message-label">Bot</div>
         <div class="nr-bubble">
 Hello. I can answer questions using information retrieved from the NeuralRays website.
- 
+
 Try asking:
 - What does NeuralRays do?
 - What AI services does NeuralRays offer?
@@ -380,7 +402,7 @@ Try asking:
         </div>
       </div>
     </div>
- 
+
     <div class="nr-quick-prompts">
       <button onclick="useExample('What does NeuralRays do?')">What does NeuralRays do?</button>
       <button onclick="useExample('What AI services does NeuralRays offer?')">AI services</button>
@@ -389,7 +411,7 @@ Try asking:
       <button onclick="useExample('How can I contact NeuralRays?')">Contact</button>
       <button onclick="useExample('Does NeuralRays list pricing?')">Pricing</button>
     </div>
- 
+
     <div class="nr-chat-input-area">
       <div class="nr-chat-input-row">
         <input
@@ -401,26 +423,26 @@ Try asking:
         />
         <button id="sendButton" onclick="sendQuestion()">Send</button>
       </div>
- 
+
       <div class="nr-small-note">
         Answers are generated from retrieved NeuralRays website content and include source URLs where available.
       </div>
     </div>
   </section>
- 
+
   <script>
     const chatPanel = document.getElementById("nrChatPanel");
     const chatWindow = document.getElementById("chatWindow");
     const questionInput = document.getElementById("questionInput");
     const sendButton = document.getElementById("sendButton");
- 
+
     function resetChat() {
       chatWindow.innerHTML = `
         <div class="nr-message bot">
           <div class="nr-message-label">Bot</div>
           <div class="nr-bubble">
 Hello. I can answer questions using information retrieved from the NeuralRays website.
- 
+
 Try asking:
 - What does NeuralRays do?
 - What AI services does NeuralRays offer?
@@ -428,69 +450,69 @@ Try asking:
           </div>
         </div>
       `;
- 
+
       questionInput.value = "";
       sendButton.disabled = false;
       sendButton.textContent = "Send";
     }
- 
+
     // Opens the panel with a fresh conversation.
     function openChat() {
       resetChat();
       chatPanel.classList.add("open");
       questionInput.focus();
     }
- 
+
     // Closes the panel and immediately refreshes the conversation,
     // so the next time it's opened it starts clean.
     function closeChat() {
       chatPanel.classList.remove("open");
       resetChat();
     }
- 
+
     // Used by the launcher icon: acts as open/close toggle.
     // Closing always triggers the refresh via closeChat().
     function toggleChat() {
       const isOpen = chatPanel.classList.contains("open");
- 
+
       if (isOpen) {
         closeChat();
       } else {
         openChat();
       }
     }
- 
+
     function escapeHtml(text) {
       const div = document.createElement("div");
       div.textContent = text;
       return div.innerHTML;
     }
- 
+
     function appendMessage(sender, text, sources = []) {
       const message = document.createElement("div");
       const isUser = sender === "You";
- 
+
       message.className = isUser ? "nr-message user" : "nr-message bot";
- 
+
       const label = document.createElement("div");
       label.className = "nr-message-label";
       label.textContent = sender;
- 
+
       const bubble = document.createElement("div");
       bubble.className = "nr-bubble";
       bubble.innerHTML = escapeHtml(text);
- 
+
       message.appendChild(label);
       message.appendChild(bubble);
- 
+
       if (!isUser && sources.length > 0) {
         const sourcesBox = document.createElement("div");
         sourcesBox.className = "nr-sources";
- 
+
         const title = document.createElement("strong");
         title.textContent = "Sources";
         sourcesBox.appendChild(title);
- 
+
         sources.slice(0, 3).forEach((source) => {
           const link = document.createElement("a");
           link.href = source;
@@ -499,51 +521,51 @@ Try asking:
           link.textContent = source;
           sourcesBox.appendChild(link);
         });
- 
+
         message.appendChild(sourcesBox);
       }
- 
+
       chatWindow.appendChild(message);
       chatWindow.scrollTop = chatWindow.scrollHeight;
     }
- 
+
     function appendLoadingMessage() {
       const loading = document.createElement("div");
       loading.className = "nr-message bot";
       loading.id = "loadingMessage";
- 
+
       loading.innerHTML = `
         <div class="nr-message-label">Bot</div>
         <div class="nr-bubble">Thinking...</div>
       `;
- 
+
       chatWindow.appendChild(loading);
       chatWindow.scrollTop = chatWindow.scrollHeight;
     }
- 
+
     function removeLoadingMessage() {
       const loading = document.getElementById("loadingMessage");
- 
+
       if (loading) {
         loading.remove();
       }
     }
- 
+
     async function sendQuestion() {
       const question = questionInput.value.trim();
- 
+
       if (!question) {
         return;
       }
- 
+
       appendMessage("You", question);
       questionInput.value = "";
       questionInput.focus();
- 
+
       sendButton.disabled = true;
       sendButton.textContent = "Thinking...";
       appendLoadingMessage();
- 
+
       try {
         const response = await fetch("/chat", {
           method: "POST",
@@ -552,13 +574,13 @@ Try asking:
           },
           body: JSON.stringify({ question }),
         });
- 
+
         if (!response.ok) {
           throw new Error("API request failed.");
         }
- 
+
         const data = await response.json();
- 
+
         removeLoadingMessage();
         appendMessage("Bot", data.answer, data.sources || []);
       } catch (error) {
@@ -572,18 +594,18 @@ Try asking:
         sendButton.textContent = "Send";
       }
     }
- 
+
     function handleKeyDown(event) {
       if (event.key === "Enter") {
         sendQuestion();
       }
     }
- 
+
     function useExample(question) {
       if (!chatPanel.classList.contains("open")) {
         openChat();
       }
- 
+
       questionInput.value = question;
       sendQuestion();
     }
