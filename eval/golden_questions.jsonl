@@ -1,0 +1,12 @@
+{"id": "q001", "question": "What does NeuralRays do?", "expected_keywords": ["artificial intelligence", "data-driven", "software solutions"], "expected_sources": ["https://neuralrays.ai"]}
+{"id": "q002", "question": "What AI services does NeuralRays offer?", "expected_keywords": ["Data Strategy Consulting", "Data Science", "AI Solution Development", "AI-Driven Automation"], "expected_sources": ["https://neuralrays.ai/ai-services"]}
+{"id": "q003", "question": "Does NeuralRays offer cloud transformation?", "expected_keywords": ["Cloud Transformation", "cloud-native", "migration"], "expected_sources": ["https://neuralrays.ai/digital-service"]}
+{"id": "q004", "question": "What digital services does NeuralRays offer?", "expected_keywords": ["Product and Platform Engineering", "Cloud Transformation", "Digital Assurance"], "expected_sources": ["https://neuralrays.ai/digital-service"]}
+{"id": "q005", "question": "How can I contact NeuralRays?", "expected_keywords": ["Hello@NeuralRays.AI", "Chennai", "Dubai", "London"], "expected_sources": ["https://neuralrays.ai/contact"]}
+{"id": "q006", "question": "Where is NeuralRays based?", "expected_keywords": ["Chennai", "Dubai", "London"], "expected_sources": ["https://neuralrays.ai/contact"]}
+{"id": "q007", "question": "Who is the CEO of NeuralRays?", "expected_keywords": ["Senthil Loganathan", "CEO"], "expected_sources": ["https://neuralrays.ai/about-us"]}
+{"id": "q008", "question": "Who is Thilagavathi?", "expected_keywords": ["Thilagavathi Ravikumar", "Finance Executive"], "expected_sources": ["https://neuralrays.ai/about-us"]}
+{"id": "q009", "question": "Who is the Product Director?", "expected_keywords": ["Anirban Bose", "Product Director"], "expected_sources": ["https://neuralrays.ai/about-us"]}
+{"id": "q010", "question": "Does NeuralRays list pricing?", "expected_keywords": ["could not find pricing", "contact"], "expected_sources": []}
+{"id": "q011", "question": "What success stories does NeuralRays list?", "expected_keywords": ["Risk Management", "Digital Banking", "Geriatric Care", "Oil and Gas"], "expected_sources": ["https://neuralrays.ai/success-stories"]}
+{"id": "q012", "question": "What is AI-driven automation?", "expected_keywords": ["AI-Driven Automation", "repetitive tasks", "automation"], "expected_sources": ["https://neuralrays.ai/ai-services"]}

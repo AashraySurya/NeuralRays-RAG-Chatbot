@@ -1,0 +1,327 @@
+{
+  "run_timestamp": "20260710_154824",
+  "summary": {
+    "total_questions": 12,
+    "passed": 12,
+    "failed": 0,
+    "pass_rate": 1.0,
+    "average_keyword_score": 1.0,
+    "average_citation_score": 1.0,
+    "average_overall_score": 1.0
+  },
+  "results": [
+    {
+      "question_id": "q001",
+      "question": "What does NeuralRays do?",
+      "answer": "Neural Rays AI develops artificial intelligence and data-driven software solutions. The company focuses on AI and digital services, ethical AI, data analysis, agile delivery, and lean product development to help clients build transformational digital products and outcomes.\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/success-stories"
+      ],
+      "expected_keywords": [
+        "artificial intelligence",
+        "data-driven",
+        "software solutions"
+      ],
+      "expected_sources": [
+        "https://neuralrays.ai"
+      ],
+      "keyword_score": 1.0,
+      "citation_score": 1.0,
+      "overall_score": 1.0,
+      "passed": true,
+      "missing_keywords": [],
+      "missing_sources": []
+    },
+    {
+      "question_id": "q002",
+      "question": "What AI services does NeuralRays offer?",
+      "answer": "Neural Rays offers several AI services, including:\n- Data Strategy Consulting\n- Data Science and AI Consulting\n- AI Solution Development / Custom AI Development\n- AI-Driven Automation\n\nThese services are focused on helping organisations build data strategies, use AI effectively, develop AI-powered solutions, and automate repetitive tasks.\n\nMost relevant page: AI Services – NeuralRays AI\nSource: https://neuralrays.ai/ai-services",
+      "sources": [
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/contact"
+      ],
+      "expected_keywords": [
+        "Data Strategy Consulting",
+        "Data Science",
+        "AI Solution Development",
+        "AI-Driven Automation"
+      ],
+      "expected_sources": [
+        "https://neuralrays.ai/ai-services"
+      ],
+      "keyword_score": 1.0,
+      "citation_score": 1.0,
+      "overall_score": 1.0,
+      "passed": true,
+      "missing_keywords": [],
+      "missing_sources": []
+    },
+    {
+      "question_id": "q003",
+      "question": "Does NeuralRays offer cloud transformation?",
+      "answer": "Yes. Neural Rays offers Cloud Transformation as part of its Digital Services. The website says they advise on cloud technologies, develop cloud-native solutions, support cloud integration, help with application modernisation, and facilitate cloud migration.\n\nMost relevant page: Digital Services – NeuralRays AI\nSource: https://neuralrays.ai/digital-service",
+      "sources": [
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/contact"
+      ],
+      "expected_keywords": [
+        "Cloud Transformation",
+        "cloud-native",
+        "migration"
+      ],
+      "expected_sources": [
+        "https://neuralrays.ai/digital-service"
+      ],
+      "keyword_score": 1.0,
+      "citation_score": 1.0,
+      "overall_score": 1.0,
+      "passed": true,
+      "missing_keywords": [],
+      "missing_sources": []
+    },
+    {
+      "question_id": "q004",
+      "question": "What digital services does NeuralRays offer?",
+      "answer": "Neural Rays lists three main Digital Services:\n- Product and Platform Engineering\n- Cloud Transformation\n- Digital Assurance\n\nThese services cover software/platform development, cloud adoption, application modernisation, quality assurance, digital testing, and AI-led test automation.\n\nMost relevant page: Digital Services – NeuralRays AI\nSource: https://neuralrays.ai/digital-service",
+      "sources": [
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/contact"
+      ],
+      "expected_keywords": [
+        "Product and Platform Engineering",
+        "Cloud Transformation",
+        "Digital Assurance"
+      ],
+      "expected_sources": [
+        "https://neuralrays.ai/digital-service"
+      ],
+      "keyword_score": 1.0,
+      "citation_score": 1.0,
+      "overall_score": 1.0,
+      "passed": true,
+      "missing_keywords": [],
+      "missing_sources": []
+    },
+    {
+      "question_id": "q005",
+      "question": "How can I contact NeuralRays?",
+      "answer": "You can contact Neural Rays by emailing Hello@NeuralRays.AI. The website says they are based in Chennai, India; Dubai, UAE; and London, UK, and serve clients globally.\n\nMost relevant page: Contact Us – NeuralRays AI\nSource: https://neuralrays.ai/contact",
+      "sources": [
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/ai-services"
+      ],
+      "expected_keywords": [
+        "Hello@NeuralRays.AI",
+        "Chennai",
+        "Dubai",
+        "London"
+      ],
+      "expected_sources": [
+        "https://neuralrays.ai/contact"
+      ],
+      "keyword_score": 1.0,
+      "citation_score": 1.0,
+      "overall_score": 1.0,
+      "passed": true,
+      "missing_keywords": [],
+      "missing_sources": []
+    },
+    {
+      "question_id": "q006",
+      "question": "Where is NeuralRays based?",
+      "answer": "You can contact Neural Rays by emailing Hello@NeuralRays.AI. The website says they are based in Chennai, India; Dubai, UAE; and London, UK, and serve clients globally.\n\nMost relevant page: Contact Us – NeuralRays AI\nSource: https://neuralrays.ai/contact",
+      "sources": [
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/digital-service"
+      ],
+      "expected_keywords": [
+        "Chennai",
+        "Dubai",
+        "London"
+      ],
+      "expected_sources": [
+        "https://neuralrays.ai/contact"
+      ],
+      "keyword_score": 1.0,
+      "citation_score": 1.0,
+      "overall_score": 1.0,
+      "passed": true,
+      "missing_keywords": [],
+      "missing_sources": []
+    },
+    {
+      "question_id": "q007",
+      "question": "Who is the CEO of NeuralRays?",
+      "answer": "According to the Neural Rays About Us page, the CEO is Senthil Loganathan.\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/contact"
+      ],
+      "expected_keywords": [
+        "Senthil Loganathan",
+        "CEO"
+      ],
+      "expected_sources": [
+        "https://neuralrays.ai/about-us"
+      ],
+      "keyword_score": 1.0,
+      "citation_score": 1.0,
+      "overall_score": 1.0,
+      "passed": true,
+      "missing_keywords": [],
+      "missing_sources": []
+    },
+    {
+      "question_id": "q008",
+      "question": "Who is Thilagavathi?",
+      "answer": "According to the Neural Rays About Us page, Thilagavathi Ravikumar is the Finance Executive.\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/success-stories"
+      ],
+      "expected_keywords": [
+        "Thilagavathi Ravikumar",
+        "Finance Executive"
+      ],
+      "expected_sources": [
+        "https://neuralrays.ai/about-us"
+      ],
+      "keyword_score": 1.0,
+      "citation_score": 1.0,
+      "overall_score": 1.0,
+      "passed": true,
+      "missing_keywords": [],
+      "missing_sources": []
+    },
+    {
+      "question_id": "q009",
+      "question": "Who is the Product Director?",
+      "answer": "According to the Neural Rays About Us page, the Product Director is Anirban Bose.\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/ai-services"
+      ],
+      "expected_keywords": [
+        "Anirban Bose",
+        "Product Director"
+      ],
+      "expected_sources": [
+        "https://neuralrays.ai/about-us"
+      ],
+      "keyword_score": 1.0,
+      "citation_score": 1.0,
+      "overall_score": 1.0,
+      "passed": true,
+      "missing_keywords": [],
+      "missing_sources": []
+    },
+    {
+      "question_id": "q010",
+      "question": "Does NeuralRays list pricing?",
+      "answer": "I could not find pricing information on the Neural Rays website. You may want to contact Neural Rays directly for pricing or project-specific costs.",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/ai-services"
+      ],
+      "expected_keywords": [
+        "could not find pricing",
+        "contact"
+      ],
+      "expected_sources": [],
+      "keyword_score": 1.0,
+      "citation_score": 1.0,
+      "overall_score": 1.0,
+      "passed": true,
+      "missing_keywords": [],
+      "missing_sources": []
+    },
+    {
+      "question_id": "q011",
+      "question": "What success stories does NeuralRays list?",
+      "answer": "Neural Rays lists several success stories, including:\n- Risk Management Software Platform\n- Digital Banking Platform\n- Geriatric Care Platform\n- Blockchain-Based Digital Health Platform\n- Asset Tracking and Inventory Management System\n- Oil and Gas Analytics\n- AI-Based Vehicle Assembly Line Defect Detection\n- Retail Macro and Micro Space Optimisation\n\nMost relevant page: Success Stories – NeuralRays AI\nSource: https://neuralrays.ai/success-stories",
+      "sources": [
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/ai-services"
+      ],
+      "expected_keywords": [
+        "Risk Management",
+        "Digital Banking",
+        "Geriatric Care",
+        "Oil and Gas"
+      ],
+      "expected_sources": [
+        "https://neuralrays.ai/success-stories"
+      ],
+      "keyword_score": 1.0,
+      "citation_score": 1.0,
+      "overall_score": 1.0,
+      "passed": true,
+      "missing_keywords": [],
+      "missing_sources": []
+    },
+    {
+      "question_id": "q012",
+      "question": "What is AI-driven automation?",
+      "answer": "Yes. Neural Rays offers AI-Driven Automation. The website explains that they use AI-powered automation to reduce mundane and repetitive tasks, freeing teams to focus on higher-value work. They also support use cases, rapid prototypes, MVPs, and scaling automation into production systems.\n\nMost relevant page: AI Services – NeuralRays AI\nSource: https://neuralrays.ai/ai-services",
+      "sources": [
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/digital-service"
+      ],
+      "expected_keywords": [
+        "AI-Driven Automation",
+        "repetitive tasks",
+        "automation"
+      ],
+      "expected_sources": [
+        "https://neuralrays.ai/ai-services"
+      ],
+      "keyword_score": 1.0,
+      "citation_score": 1.0,
+      "overall_score": 1.0,
+      "passed": true,
+      "missing_keywords": [],
+      "missing_sources": []
+    }
+  ]
+}
