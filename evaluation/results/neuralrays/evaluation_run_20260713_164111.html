@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RAG Evaluation Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 30px;
+      background: #f7fbff;
+      color: #102033;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #d8e9ef;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 24px rgba(16, 32, 51, 0.08);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      background: #f0f8ff;
+      border: 1px solid #d6ebff;
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .metric strong {
+      display: block;
+      color: #607086;
+      font-size: 0.85rem;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 6px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #1657c8;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #d8e9ef;
+      text-align: left;
+      font-size: 0.9rem;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eaf6ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>RAG Evaluation Dashboard</h1>
+    <p><strong>Tenant:</strong> neuralrays</p>
+    <p><strong>Adapter:</strong> simple</p>
+    <p><strong>Run timestamp:</strong> 20260713_164111</p>
+  </div>
+
+  <div class="card">
+    <h2>Summary Metrics</h2>
+    <div class="grid">
+      <div class="metric"><strong>Total Questions</strong><span>6</span></div>
+      <div class="metric"><strong>Passed</strong><span>4</span></div>
+      <div class="metric"><strong>Failed</strong><span>2</span></div>
+      <div class="metric"><strong>Pass Rate</strong><span>66.7%</span></div>
+      <div class="metric"><strong>Faithfulness</strong><span>0.442</span></div>
+      <div class="metric"><strong>Correctness</strong><span>0.183</span></div>
+      <div class="metric"><strong>Context Precision</strong><span>0.586</span></div>
+      <div class="metric"><strong>Answer Relevancy</strong><span>0.544</span></div>
+      <div class="metric"><strong>Hallucination</strong><span>0.558</span></div>
+      <div class="metric"><strong>Source Presence</strong><span>1.0</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Question-Level Results</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Status</th>
+          <th>Question</th>
+          <th>Faithfulness</th>
+          <th>Correctness</th>
+          <th>Context Precision</th>
+          <th>Answer Relevancy</th>
+          <th>Hallucination</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>auto_q0001</td>
+          <td>PASS</td>
+          <td>What does NeuralRays AI say about outcomes?</td>
+          <td>0.719</td>
+          <td>0.277</td>
+          <td>0.667</td>
+          <td>0.667</td>
+          <td>0.281</td>
+        </tr>
+        
+        <tr>
+          <td>auto_q0002</td>
+          <td>PASS</td>
+          <td>What does About Us - NeuralRays AI say about the organisation and its team?</td>
+          <td>0.512</td>
+          <td>0.233</td>
+          <td>0.5</td>
+          <td>0.5</td>
+          <td>0.488</td>
+        </tr>
+        
+        <tr>
+          <td>auto_q0003</td>
+          <td>FAIL</td>
+          <td>What AI services or capabilities are described in AI Services - NeuralRays AI?</td>
+          <td>0.257</td>
+          <td>0.11</td>
+          <td>0.5</td>
+          <td>0.5</td>
+          <td>0.743</td>
+        </tr>
+        
+        <tr>
+          <td>auto_q0004</td>
+          <td>PASS</td>
+          <td>What contact or location information is provided in Contact Us - NeuralRays AI?</td>
+          <td>0.609</td>
+          <td>0.264</td>
+          <td>0.75</td>
+          <td>0.5</td>
+          <td>0.391</td>
+        </tr>
+        
+        <tr>
+          <td>auto_q0005</td>
+          <td>PASS</td>
+          <td>What digital services or capabilities are described in Digital Services - NeuralRays AI?</td>
+          <td>0.312</td>
+          <td>0.114</td>
+          <td>0.6</td>
+          <td>0.6</td>
+          <td>0.688</td>
+        </tr>
+        
+        <tr>
+          <td>auto_q0006</td>
+          <td>FAIL</td>
+          <td>What case studies or success stories are described in Success Stories - NeuralRays AI?</td>
+          <td>0.244</td>
+          <td>0.098</td>
+          <td>0.5</td>
+          <td>0.5</td>
+          <td>0.756</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

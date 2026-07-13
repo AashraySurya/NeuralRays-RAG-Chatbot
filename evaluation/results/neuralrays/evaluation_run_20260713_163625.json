@@ -1,0 +1,339 @@
+{
+  "tenant_id": "neuralrays",
+  "adapter_name": "simple",
+  "run_timestamp": "20260713_163625",
+  "total_questions": 10,
+  "summary": {
+    "total_questions": 10,
+    "passed": 3,
+    "failed": 7,
+    "pass_rate": 0.3,
+    "average_faithfulness": 0.238,
+    "average_correctness": 0.122,
+    "average_context_precision": 0.327,
+    "average_answer_relevancy": 0.37,
+    "average_hallucination": 0.762,
+    "average_source_presence": 1.0
+  },
+  "results": [
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0001",
+      "question": "What services or capabilities are described in NeuralRays AI?",
+      "answer": "Based on the Neural Rays website, I found this relevant information:\n\nAbout Us – NeuralRays AI Our Story Inspired by the principles of ethical artificial intelligence, we founded NeuralRays AI in 2018 to help clients use innovative and emerging AI and digital services to build solutions that create positive human and business outcomes. These are the key principles of ethical AI, and they guide everything we do at NeuralRays AI.\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/contact"
+      ],
+      "source_url": "https://neuralrays.ai",
+      "metrics": {
+        "faithfulness": 0.447,
+        "correctness": 0.205,
+        "context_precision": 0.5,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.553,
+        "source_presence": 1.0
+      },
+      "passed": true,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0002",
+      "question": "Who are the key people or roles mentioned in NeuralRays AI?",
+      "answer": "The Neural Rays About Us page lists its core team as:\n- Rajkumar Srinivasan, Solutions Director\n- Balaji Kalidhasan, Technical Lead\n- Satish Namburi, Solutions Director\n- Hemkumar Lakshminarayanan, Technical Director\n- Thilagavathi Ravikumar, Finance Executive\n- Anirban Bose, Product Director\n- Iswarya Selvam, QA Lead\n- Srinivasan B Kada, CBO\n- Senthil Loganathan, CEO\n- Sathiyan Sivaprakasam, DevOps Architect\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/contact"
+      ],
+      "source_url": "https://neuralrays.ai",
+      "metrics": {
+        "faithfulness": 0.098,
+        "correctness": 0.045,
+        "context_precision": 0.2,
+        "answer_relevancy": 0.2,
+        "hallucination": 0.902,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0003",
+      "question": "What contact or location information is provided in NeuralRays AI?",
+      "answer": "You can contact Neural Rays by emailing Hello@NeuralRays.AI. The website says they are based in Chennai, India; Dubai, UAE; and London, UK, and serve clients globally.\n\nMost relevant page: Contact Us – NeuralRays AI\nSource: https://neuralrays.ai/contact",
+      "sources": [
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/digital-service"
+      ],
+      "source_url": "https://neuralrays.ai",
+      "metrics": {
+        "faithfulness": 0.174,
+        "correctness": 0.043,
+        "context_precision": 0.25,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.826,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0004",
+      "question": "What case studies or success stories are described in NeuralRays AI?",
+      "answer": "Neural Rays lists several success stories, including:\n- Risk Management Software Platform\n- Digital Banking Platform\n- Geriatric Care Platform\n- Blockchain-Based Digital Health Platform\n- Asset Tracking and Inventory Management System\n- Oil and Gas Analytics\n- AI-Based Vehicle Assembly Line Defect Detection\n- Retail Macro and Micro Space Optimisation\n\nMost relevant page: Success Stories – NeuralRays AI\nSource: https://neuralrays.ai/success-stories",
+      "sources": [
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/ai-services"
+      ],
+      "source_url": "https://neuralrays.ai",
+      "metrics": {
+        "faithfulness": 0.073,
+        "correctness": 0.214,
+        "context_precision": 0.167,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.927,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0005",
+      "question": "What contact or location information is provided in About Us - NeuralRays AI?",
+      "answer": "You can contact Neural Rays by emailing Hello@NeuralRays.AI. The website says they are based in Chennai, India; Dubai, UAE; and London, UK, and serve clients globally.\n\nMost relevant page: Contact Us – NeuralRays AI\nSource: https://neuralrays.ai/contact",
+      "sources": [
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/success-stories"
+      ],
+      "source_url": "https://neuralrays.ai/about-us",
+      "metrics": {
+        "faithfulness": 0.435,
+        "correctness": 0.111,
+        "context_precision": 0.5,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.565,
+        "source_presence": 1.0
+      },
+      "passed": true,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0006",
+      "question": "Who are the key people or roles mentioned in AI Services - NeuralRays AI?",
+      "answer": "The Neural Rays About Us page lists its core team as:\n- Rajkumar Srinivasan, Solutions Director\n- Balaji Kalidhasan, Technical Lead\n- Satish Namburi, Solutions Director\n- Hemkumar Lakshminarayanan, Technical Director\n- Thilagavathi Ravikumar, Finance Executive\n- Anirban Bose, Product Director\n- Iswarya Selvam, QA Lead\n- Srinivasan B Kada, CBO\n- Senthil Loganathan, CEO\n- Sathiyan Sivaprakasam, DevOps Architect\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/contact"
+      ],
+      "source_url": "https://neuralrays.ai/ai-services",
+      "metrics": {
+        "faithfulness": 0.049,
+        "correctness": 0.024,
+        "context_precision": 0.333,
+        "answer_relevancy": 0.167,
+        "hallucination": 0.951,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0007",
+      "question": "What contact or location information is provided in AI Services - NeuralRays AI?",
+      "answer": "You can contact Neural Rays by emailing Hello@NeuralRays.AI. The website says they are based in Chennai, India; Dubai, UAE; and London, UK, and serve clients globally.\n\nMost relevant page: Contact Us – NeuralRays AI\nSource: https://neuralrays.ai/contact",
+      "sources": [
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/digital-service"
+      ],
+      "source_url": "https://neuralrays.ai/ai-services",
+      "metrics": {
+        "faithfulness": 0.087,
+        "correctness": 0.019,
+        "context_precision": 0.0,
+        "answer_relevancy": 0.4,
+        "hallucination": 0.913,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0008",
+      "question": "What case studies or success stories are described in AI Services - NeuralRays AI?",
+      "answer": "Neural Rays offers several AI services, including:\n- Data Strategy Consulting\n- Data Science and AI Consulting\n- AI Solution Development / Custom AI Development\n- AI-Driven Automation\n\nThese services are focused on helping organisations build data strategies, use AI effectively, develop AI-powered solutions, and automate repetitive tasks.\n\nMost relevant page: AI Services – NeuralRays AI\nSource: https://neuralrays.ai/ai-services",
+      "sources": [
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/contact"
+      ],
+      "source_url": "https://neuralrays.ai/ai-services",
+      "metrics": {
+        "faithfulness": 0.286,
+        "correctness": 0.233,
+        "context_precision": 0.143,
+        "answer_relevancy": 0.286,
+        "hallucination": 0.714,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0009",
+      "question": "What contact or location information is provided in Contact Us - NeuralRays AI?",
+      "answer": "You can contact Neural Rays by emailing Hello@NeuralRays.AI. The website says they are based in Chennai, India; Dubai, UAE; and London, UK, and serve clients globally.\n\nMost relevant page: Contact Us – NeuralRays AI\nSource: https://neuralrays.ai/contact",
+      "sources": [
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/success-stories"
+      ],
+      "source_url": "https://neuralrays.ai/contact",
+      "metrics": {
+        "faithfulness": 0.609,
+        "correctness": 0.264,
+        "context_precision": 0.75,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.391,
+        "source_presence": 1.0
+      },
+      "passed": true,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0010",
+      "question": "Who are the key people or roles mentioned in Digital Services - NeuralRays AI?",
+      "answer": "The Neural Rays About Us page lists its core team as:\n- Rajkumar Srinivasan, Solutions Director\n- Balaji Kalidhasan, Technical Lead\n- Satish Namburi, Solutions Director\n- Hemkumar Lakshminarayanan, Technical Director\n- Thilagavathi Ravikumar, Finance Executive\n- Anirban Bose, Product Director\n- Iswarya Selvam, QA Lead\n- Srinivasan B Kada, CBO\n- Senthil Loganathan, CEO\n- Sathiyan Sivaprakasam, DevOps Architect\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/contact"
+      ],
+      "source_url": "https://neuralrays.ai/digital-service",
+      "metrics": {
+        "faithfulness": 0.122,
+        "correctness": 0.057,
+        "context_precision": 0.429,
+        "answer_relevancy": 0.143,
+        "hallucination": 0.878,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    }
+  ]
+}
