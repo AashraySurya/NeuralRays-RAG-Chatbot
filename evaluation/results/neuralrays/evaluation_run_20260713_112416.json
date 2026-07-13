@@ -1,0 +1,335 @@
+{
+  "tenant_id": "neuralrays",
+  "adapter_name": "simple",
+  "run_timestamp": "20260713_112416",
+  "total_questions": 10,
+  "summary": {
+    "total_questions": 10,
+    "passed": 5,
+    "failed": 5,
+    "pass_rate": 0.5,
+    "average_faithfulness": 0.305,
+    "average_correctness": 0.147,
+    "average_context_precision": 0.728,
+    "average_answer_relevancy": 0.498,
+    "average_hallucination": 0.695,
+    "average_source_presence": 1.0
+  },
+  "results": [
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0001",
+      "question": "What does NeuralRays AI say about data, outcomes, development?",
+      "answer": "Neural Rays AI develops artificial intelligence and data-driven software solutions. The company focuses on AI and digital services, ethical AI, data analysis, agile delivery, and lean product development to help clients build transformational digital products and outcomes.\n\nMost relevant page: NeuralRays AI\nSource: https://neuralrays.ai",
+      "sources": [
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/digital-service"
+      ],
+      "source_url": "https://neuralrays.ai",
+      "metrics": {
+        "faithfulness": 0.719,
+        "correctness": 0.277,
+        "context_precision": 0.8,
+        "answer_relevancy": 0.8,
+        "hallucination": 0.281,
+        "source_presence": 1.0
+      },
+      "passed": true,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0002",
+      "question": "What does NeuralRays AI say about read, help, data?",
+      "answer": "Neural Rays AI develops artificial intelligence and data-driven software solutions. The company focuses on AI and digital services, ethical AI, data analysis, agile delivery, and lean product development to help clients build transformational digital products and outcomes.\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/digital-service"
+      ],
+      "source_url": "https://neuralrays.ai",
+      "metrics": {
+        "faithfulness": 0.406,
+        "correctness": 0.148,
+        "context_precision": 0.8,
+        "answer_relevancy": 0.6,
+        "hallucination": 0.594,
+        "source_presence": 1.0
+      },
+      "passed": true,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0003",
+      "question": "What does NeuralRays AI say about development, results, first?",
+      "answer": "Neural Rays AI develops artificial intelligence and data-driven software solutions. The company focuses on AI and digital services, ethical AI, data analysis, agile delivery, and lean product development to help clients build transformational digital products and outcomes.\n\nMost relevant page: NeuralRays AI\nSource: https://neuralrays.ai",
+      "sources": [
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/ai-services"
+      ],
+      "source_url": "https://neuralrays.ai",
+      "metrics": {
+        "faithfulness": 0.406,
+        "correctness": 0.141,
+        "context_precision": 0.8,
+        "answer_relevancy": 0.4,
+        "hallucination": 0.594,
+        "source_presence": 1.0
+      },
+      "passed": true,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0004",
+      "question": "What does NeuralRays AI say about high, quality, results?",
+      "answer": "Neural Rays AI develops artificial intelligence and data-driven software solutions. The company focuses on AI and digital services, ethical AI, data analysis, agile delivery, and lean product development to help clients build transformational digital products and outcomes.\n\nMost relevant page: NeuralRays AI\nSource: https://neuralrays.ai",
+      "sources": [
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/success-stories"
+      ],
+      "source_url": "https://neuralrays.ai",
+      "metrics": {
+        "faithfulness": 0.406,
+        "correctness": 0.146,
+        "context_precision": 0.8,
+        "answer_relevancy": 0.2,
+        "hallucination": 0.594,
+        "source_presence": 1.0
+      },
+      "passed": true,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0005",
+      "question": "What does NeuralRays AI say about consulting, development, driven?",
+      "answer": "Neural Rays offers several AI services, including:\n- Data Strategy Consulting\n- Data Science and AI Consulting\n- AI Solution Development / Custom AI Development\n- AI-Driven Automation\n\nThese services are focused on helping organisations build data strategies, use AI effectively, develop AI-powered solutions, and automate repetitive tasks.\n\nMost relevant page: AI Services – NeuralRays AI\nSource: https://neuralrays.ai/ai-services",
+      "sources": [
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/digital-service"
+      ],
+      "source_url": "https://neuralrays.ai",
+      "metrics": {
+        "faithfulness": 0.171,
+        "correctness": 0.429,
+        "context_precision": 0.8,
+        "answer_relevancy": 0.8,
+        "hallucination": 0.829,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0006",
+      "question": "What does About Us – NeuralRays AI say about clients, neuralrays, director?",
+      "answer": "I could not identify that specific person or role from the Neural Rays About Us page.\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/success-stories"
+      ],
+      "source_url": "https://neuralrays.ai/about-us",
+      "metrics": {
+        "faithfulness": 0.071,
+        "correctness": 0.011,
+        "context_precision": 0.75,
+        "answer_relevancy": 0.25,
+        "hallucination": 0.929,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0007",
+      "question": "What does About Us – NeuralRays AI say about director, srinivasan, technical?",
+      "answer": "I could not identify that specific person or role from the Neural Rays About Us page.\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/success-stories"
+      ],
+      "source_url": "https://neuralrays.ai/about-us",
+      "metrics": {
+        "faithfulness": 0.071,
+        "correctness": 0.018,
+        "context_precision": 0.8,
+        "answer_relevancy": 0.2,
+        "hallucination": 0.929,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0008",
+      "question": "What does AI Services – NeuralRays AI say about data, strategy, consulting?",
+      "answer": "Neural Rays offers several AI services, including:\n- Data Strategy Consulting\n- Data Science and AI Consulting\n- AI Solution Development / Custom AI Development\n- AI-Driven Automation\n\nThese services are focused on helping organisations build data strategies, use AI effectively, develop AI-powered solutions, and automate repetitive tasks.\n\nMost relevant page: AI Services – NeuralRays AI\nSource: https://neuralrays.ai/ai-services",
+      "sources": [
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/contact"
+      ],
+      "source_url": "https://neuralrays.ai/ai-services",
+      "metrics": {
+        "faithfulness": 0.257,
+        "correctness": 0.11,
+        "context_precision": 0.833,
+        "answer_relevancy": 0.833,
+        "hallucination": 0.743,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0009",
+      "question": "What does AI Services – NeuralRays AI say about help, provide, expert?",
+      "answer": "Neural Rays offers several AI services, including:\n- Data Strategy Consulting\n- Data Science and AI Consulting\n- AI Solution Development / Custom AI Development\n- AI-Driven Automation\n\nThese services are focused on helping organisations build data strategies, use AI effectively, develop AI-powered solutions, and automate repetitive tasks.\n\nMost relevant page: AI Services – NeuralRays AI\nSource: https://neuralrays.ai/ai-services",
+      "sources": [
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/success-stories",
+        "https://neuralrays.ai/contact"
+      ],
+      "source_url": "https://neuralrays.ai/ai-services",
+      "metrics": {
+        "faithfulness": 0.2,
+        "correctness": 0.076,
+        "context_precision": 0.4,
+        "answer_relevancy": 0.4,
+        "hallucination": 0.8,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0010",
+      "question": "What does AI Services – NeuralRays AI say about automation, full, help?",
+      "answer": "Neural Rays offers several AI services, including:\n- Data Strategy Consulting\n- Data Science and AI Consulting\n- AI Solution Development / Custom AI Development\n- AI-Driven Automation\n\nThese services are focused on helping organisations build data strategies, use AI effectively, develop AI-powered solutions, and automate repetitive tasks.\n\nMost relevant page: AI Services – NeuralRays AI\nSource: https://neuralrays.ai/ai-services",
+      "sources": [
+        "https://neuralrays.ai/ai-services",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/contact"
+      ],
+      "source_url": "https://neuralrays.ai/ai-services",
+      "metrics": {
+        "faithfulness": 0.343,
+        "correctness": 0.113,
+        "context_precision": 0.5,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.657,
+        "source_presence": 1.0
+      },
+      "passed": true,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    }
+  ]
+}
