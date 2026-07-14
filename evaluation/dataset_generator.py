@@ -4,20 +4,19 @@ Auto question generation for the domain-agnostic evaluation service.
 This module reads chunks from the shared vector store and creates evaluation
 questions automatically. It does not hardcode NeuralRays-specific questions.
 
-The generator is source-aware:
-- contact pages generate contact/location questions
-- about/team pages generate people/role questions
-- services pages generate service/capability questions
-- success/case-study pages generate case study questions
-- other pages generate general summary questions
+Important design choice:
+Questions are generated at source-document/page level, not single-chunk level.
+This means the expected context is the combined text from all chunks belonging
+to the same source document/page.
 
-This avoids creating questions from the wrong chunk type, which can unfairly
-reduce faithfulness scores.
+This avoids unfair failures where a broad answer is correct but is scored
+against only one small chunk.
 """
 
 from __future__ import annotations
 
 import re
+from collections import defaultdict
 from typing import Any
 
 import chromadb
@@ -39,7 +38,7 @@ STOPWORDS = {
     "first", "high", "quality", "results", "result", "client", "clients",
     "website", "page", "data", "digital", "work", "works", "make", "made",
     "use", "used", "based", "including", "include", "includes", "main",
-    "point", "points", "overview", "learn", "explore", "more",
+    "point", "points", "overview", "learn", "explore", "more", "lean",
 }
 
 
@@ -95,6 +94,22 @@ def load_chunks_from_vector_store(
     return chunks
 
 
+def clean_title(title: str) -> str:
+    """
+    Clean titles so generated questions read naturally.
+    """
+
+    title = title.strip()
+
+    if not title:
+        return "this document"
+
+    title = title.replace("–", "-")
+    title = re.sub(r"\s+", " ", title)
+
+    return title
+
+
 def get_title_from_metadata(metadata: dict[str, Any]) -> str:
     """
     Find a readable document title from metadata.
@@ -125,22 +140,6 @@ def get_source_url_from_metadata(metadata: dict[str, Any]) -> str | None:
     return str(source_url)
 
 
-def clean_title(title: str) -> str:
-    """
-    Clean titles so generated questions read naturally.
-    """
-
-    title = title.strip()
-
-    if not title:
-        return "this document"
-
-    title = title.replace("–", "-")
-    title = re.sub(r"\s+", " ", title)
-
-    return title
-
-
 def tokenize(text: str) -> list[str]:
     """
     Tokenise text into lowercase words.
@@ -151,9 +150,10 @@ def tokenize(text: str) -> list[str]:
 
 def extract_keywords(text: str, limit: int = 5) -> list[str]:
     """
-    Extract useful keywords from chunk text.
+    Extract useful keywords from document text.
 
-    Weak generic words are removed so generated questions are clearer.
+    These are saved in metadata for inspection, but the generator no longer
+    creates weak homepage questions such as "What does this say about lean?"
     """
 
     words = tokenize(text)
@@ -181,8 +181,8 @@ def infer_document_type(title: str, source_url: str | None, text: str) -> str:
     """
     Infer a general document type from title, URL and text.
 
-    This keeps the system domain-agnostic while preventing unsuitable questions
-    being generated from the wrong source page.
+    This keeps the evaluation layer domain-agnostic while producing questions
+    that match the type of source document.
     """
 
     title_lower = title.lower()
@@ -197,10 +197,16 @@ def infer_document_type(title: str, source_url: str | None, text: str) -> str:
     if any(term in combined for term in ["about", "team", "people", "leadership"]):
         return "about"
 
-    if any(term in combined for term in ["success", "case-study", "case-studies", "story", "stories"]):
+    if any(
+        term in combined
+        for term in ["success", "case-study", "case-studies", "story", "stories"]
+    ):
         return "case_study"
 
-    if any(term in combined for term in ["ai-service", "ai-services", "artificial-intelligence"]):
+    if any(
+        term in combined
+        for term in ["ai-service", "ai-services", "artificial-intelligence"]
+    ):
         return "ai_services"
 
     if any(term in combined for term in ["digital-service", "digital-services"]):
@@ -209,7 +215,10 @@ def infer_document_type(title: str, source_url: str | None, text: str) -> str:
     if any(term in combined for term in ["service", "services", "capabilities", "solutions"]):
         return "services"
 
-    if any(term in text_lower for term in ["policy", "contract", "clause", "agreement", "compliance"]):
+    if any(
+        term in text_lower
+        for term in ["policy", "contract", "clause", "agreement", "compliance"]
+    ):
         return "policy"
 
     return "general"
@@ -222,6 +231,9 @@ def build_question_for_document_type(
 ) -> str:
     """
     Generate a natural question based on inferred document type.
+
+    For general pages, this deliberately asks a broad summary question instead
+    of asking about a single extracted keyword.
     """
 
     if document_type == "contact":
@@ -245,28 +257,85 @@ def build_question_for_document_type(
     if document_type == "policy":
         return f"What are the key requirements or clauses described in {title}?"
 
-    if keywords:
-        return f"What does {title} say about {keywords[0]}?"
-
     return f"What are the main points covered in {title}?"
 
 
-def generate_question_for_chunk(
-    chunk: DocumentChunk,
+def group_chunks_by_source(
+    chunks: list[DocumentChunk],
+) -> list[list[DocumentChunk]]:
+    """
+    Group chunks by source URL.
+
+    If source URL is missing, fall back to title.
+    """
+
+    grouped: dict[str, list[DocumentChunk]] = defaultdict(list)
+
+    for chunk in chunks:
+        source_url = get_source_url_from_metadata(chunk.metadata)
+        title = get_title_from_metadata(chunk.metadata)
+
+        group_key = source_url or title or chunk.chunk_id
+
+        grouped[group_key].append(chunk)
+
+    return list(grouped.values())
+
+
+def sort_chunks_by_index(chunks: list[DocumentChunk]) -> list[DocumentChunk]:
+    """
+    Sort chunks in document order using chunk_index metadata.
+    """
+
+    return sorted(
+        chunks,
+        key=lambda chunk: int(chunk.metadata.get("chunk_index", 0)),
+    )
+
+
+def build_combined_context(chunks: list[DocumentChunk]) -> str:
+    """
+    Combine all chunks from the same source page/document into one context.
+    """
+
+    sorted_chunks = sort_chunks_by_index(chunks)
+
+    context_parts = []
+
+    seen_sections: set[str] = set()
+
+    for chunk in sorted_chunks:
+        section_heading = str(chunk.metadata.get("section_heading", "")).strip()
+
+        if section_heading and section_heading not in seen_sections:
+            context_parts.append(f"Section: {section_heading}")
+            seen_sections.add(section_heading)
+
+        context_parts.append(chunk.text)
+
+    return "\n\n".join(context_parts).strip()
+
+
+def generate_question_for_source_group(
+    chunks: list[DocumentChunk],
     question_number: int,
 ) -> GeneratedQuestion:
     """
-    Generate one evaluation question from a document chunk.
+    Generate one evaluation question from a source page/document group.
     """
 
-    title = get_title_from_metadata(chunk.metadata)
-    source_url = get_source_url_from_metadata(chunk.metadata)
-    keywords = extract_keywords(chunk.text, limit=5)
+    sorted_chunks = sort_chunks_by_index(chunks)
+    first_chunk = sorted_chunks[0]
+
+    title = get_title_from_metadata(first_chunk.metadata)
+    source_url = get_source_url_from_metadata(first_chunk.metadata)
+    expected_context = build_combined_context(sorted_chunks)
+    keywords = extract_keywords(expected_context, limit=5)
 
     document_type = infer_document_type(
         title=title,
         source_url=source_url,
-        text=chunk.text,
+        text=expected_context,
     )
 
     question = build_question_for_document_type(
@@ -275,19 +344,22 @@ def generate_question_for_chunk(
         keywords=keywords,
     )
 
+    source_chunk_ids = [chunk.chunk_id for chunk in sorted_chunks]
+
     return GeneratedQuestion(
-        tenant_id=chunk.tenant_id,
+        tenant_id=first_chunk.tenant_id,
         question_id=f"auto_q{question_number:04d}",
         question=question,
-        source_chunk_id=chunk.chunk_id,
+        source_chunk_id=",".join(source_chunk_ids),
         source_url=source_url,
-        expected_context=chunk.text,
+        expected_context=expected_context,
         metadata={
             "title": title,
             "source_url": source_url,
             "keywords": keywords,
             "document_type": document_type,
-            "generation_method": "source_aware_pattern_based",
+            "generation_method": "source_level_pattern_based",
+            "source_chunk_count": len(sorted_chunks),
         },
     )
 
@@ -297,39 +369,28 @@ def generate_questions_from_chunks(
     max_questions: int,
 ) -> list[GeneratedQuestion]:
     """
-    Generate a list of evaluation questions from chunks.
+    Generate evaluation questions from source-level groups.
 
-    To avoid duplicate or unfair questions, only one question is generated per
-    source URL and document type combination where possible.
+    This creates one question per source document/page, using all chunks from
+    that source as the expected context.
     """
 
     questions: list[GeneratedQuestion] = []
-    seen_keys: set[str] = set()
 
-    for chunk in chunks:
+    source_groups = group_chunks_by_source(chunks)
+
+    for source_group in source_groups:
         if len(questions) >= max_questions:
             break
 
-        title = get_title_from_metadata(chunk.metadata)
-        source_url = get_source_url_from_metadata(chunk.metadata)
-        document_type = infer_document_type(
-            title=title,
-            source_url=source_url,
-            text=chunk.text,
-        )
-
-        source_key = source_url or title
-        dedupe_key = f"{source_key}_{document_type}".lower().strip()
-
-        if dedupe_key in seen_keys:
+        if not source_group:
             continue
 
-        generated_question = generate_question_for_chunk(
-            chunk=chunk,
+        generated_question = generate_question_for_source_group(
+            chunks=source_group,
             question_number=len(questions) + 1,
         )
 
-        seen_keys.add(dedupe_key)
         questions.append(generated_question)
 
     return questions
