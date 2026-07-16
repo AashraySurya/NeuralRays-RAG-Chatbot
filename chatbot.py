@@ -3,8 +3,8 @@ Chatbot retrieval logic for the Neural Rays RAG chatbot.
 
 This script loads the ChromaDB vector database, embeds the user's question using
 the same local embedding model used during ingestion, retrieves relevant website
-chunks, re-ranks them, and produces a simple grounded answer using Neural Rays
-website content.
+chunks, sends them through reranker.py, and produces a simple grounded answer
+using Neural Rays website content.
 
 This version does not require an OpenAI API key.
 """
@@ -14,7 +14,7 @@ from __future__ import annotations
 import logging
 import os
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -25,12 +25,16 @@ os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 import chromadb
 from sentence_transformers import SentenceTransformer
 
+from reranker import RerankableChunk, rerank_chunks
+
 
 CHROMA_DB_PATH = Path("data/chroma_db")
 COLLECTION_NAME = "neuralrays_website"
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
-TOP_K_RESULTS = 8
+# Retrieve more chunks first, then let reranker.py reduce them to the best few.
+INITIAL_RETRIEVAL_K = 12
+FINAL_TOP_K = 6
 
 
 @dataclass
@@ -43,6 +47,9 @@ class RetrievedChunk:
     url: str
     title: str
     distance: float
+    section_heading: str = ""
+    chunk_type: str = ""
+    metadata: dict[str, Any] = field(default_factory=dict)
     rerank_score: float = 0.0
 
 
@@ -82,7 +89,7 @@ def identify_intent(question: str) -> str:
     """
     Identify the broad type of question being asked.
 
-    This helps us favour the correct Neural Rays page after vector retrieval.
+    This helps the reranker favour the correct Neural Rays page after vector retrieval.
     """
 
     question = normalise_question(question)
@@ -157,94 +164,10 @@ def identify_intent(question: str) -> str:
     if any(word in question for word in ["success", "case study", "case studies", "stories", "examples"]):
         return "success_stories"
 
-    if any(word in question for word in ["what does", "about", "who are", "company"]):
+    if any(word in question for word in ["what does", "about", "who are", "company", "organisation", "organization"]):
         return "about"
 
     return "general"
-
-
-def get_page_priority(intent: str, url: str, title: str) -> float:
-    """
-    Give a score boost to pages that are more suitable for the user's intent.
-    """
-
-    url = url.lower()
-    title = title.lower()
-
-    if intent == "contact":
-        if "contact" in url or "contact" in title:
-            return 4.0
-
-    if intent == "team":
-        if "about" in url or "about" in title:
-            return 5.0
-        if "contact" in url:
-            return -3.0
-
-    if intent in {"ai_services", "automation"}:
-        if "ai-services" in url or "ai services" in title:
-            return 4.0
-        if "contact" in url:
-            return -3.0
-
-    if intent in {"digital_services", "cloud"}:
-        if "digital-service" in url or "digital services" in title:
-            return 4.0
-        if "contact" in url:
-            return -3.0
-
-    if intent == "success_stories":
-        if "success-stories" in url or "success stories" in title:
-            return 4.0
-
-    if intent == "about":
-        if "about" in url or "about" in title:
-            return 3.0
-        if url.rstrip("/") == "https://neuralrays.ai":
-            return 2.0
-
-    return 0.0
-
-
-def keyword_overlap_score(question: str, text: str) -> float:
-    """
-    Give a small score boost when words from the question appear in the chunk.
-    """
-
-    stop_words = {
-        "what",
-        "does",
-        "do",
-        "is",
-        "are",
-        "the",
-        "a",
-        "an",
-        "of",
-        "to",
-        "in",
-        "for",
-        "with",
-        "and",
-        "or",
-        "neuralrays",
-        "neural",
-        "rays",
-        "offer",
-        "offers",
-    }
-
-    question_words = {
-        word
-        for word in re.findall(r"[a-zA-Z]+", question.lower())
-        if word not in stop_words
-    }
-
-    text_words = set(re.findall(r"[a-zA-Z]+", text.lower()))
-
-    overlap = question_words.intersection(text_words)
-
-    return float(len(overlap))
 
 
 def extract_relevant_sentences(text: str, question: str, max_sentences: int = 3) -> str:
@@ -271,7 +194,7 @@ def extract_relevant_sentences(text: str, question: str, max_sentences: int = 3)
 
     if scored_sentences:
         scored_sentences.sort(key=lambda item: item[0], reverse=True)
-        selected = [sentence for _, sentence in scored_sentences[:max_sentences]]
+        selected = [sentence for _score, sentence in scored_sentences[:max_sentences]]
     else:
         selected = sentences[:max_sentences]
 
@@ -335,7 +258,7 @@ def answer_team_question(question: str) -> str:
         {
             "name": "Sathiyan Sivaprakasam",
             "role": "DevOps Architect",
-            "matches": ["sathiyan", "sathiyan sivaprakasam", "sivaprakasam"],
+            "matches": ["sathiyan", "sathiyan sivaprakasam"],
         },
     ]
 
@@ -350,7 +273,7 @@ def answer_team_question(question: str) -> str:
         "devops architect": ("DevOps Architect", "Sathiyan Sivaprakasam"),
     }
 
-    # First, handle questions about a specific person
+    # First, handle questions about a specific person.
     for person in people:
         if any(match in question for match in person["matches"]):
             return (
@@ -360,7 +283,7 @@ def answer_team_question(question: str) -> str:
                 "Source: https://neuralrays.ai/about-us"
             )
 
-    # Then, handle questions about a specific role
+    # Then, handle questions about a specific role.
     for role_key, (role_title, name) in role_answers.items():
         if role_key in question:
             return (
@@ -370,7 +293,7 @@ def answer_team_question(question: str) -> str:
                 "Source: https://neuralrays.ai/about-us"
             )
 
-    # Handle Solutions Director separately because there are two
+    # Handle Solutions Director separately because there are two.
     if "solutions director" in question or "solution director" in question:
         return (
             "According to the Neural Rays About Us page, the Solutions Directors "
@@ -379,7 +302,7 @@ def answer_team_question(question: str) -> str:
             "Source: https://neuralrays.ai/about-us"
         )
 
-    # Only list everyone if the user asks a broad team question
+    # Only list everyone if the user asks a broad team question.
     if any(phrase in question for phrase in ["team", "core team", "who works", "people", "members"]):
         return (
             "The Neural Rays About Us page lists its core team as:\n"
@@ -426,7 +349,7 @@ class NeuralRaysChatbot:
 
     def retrieve_relevant_chunks(self, question: str) -> list[RetrievedChunk]:
         """
-        Retrieve and re-rank website chunks for the user's question.
+        Retrieve website chunks using vector search, then rerank them with reranker.py.
         """
 
         question_embedding = self.model.encode(
@@ -436,7 +359,11 @@ class NeuralRaysChatbot:
         ).tolist()
 
         total_chunks = self.collection.count()
-        number_of_results = min(TOP_K_RESULTS, total_chunks)
+
+        if total_chunks == 0:
+            return []
+
+        number_of_results = min(INITIAL_RETRIEVAL_K, total_chunks)
 
         results = self.collection.query(
             query_embeddings=[question_embedding],
@@ -448,34 +375,55 @@ class NeuralRaysChatbot:
         metadatas = results["metadatas"][0]
         distances = results["distances"][0]
 
-        intent = identify_intent(question)
-
-        chunks: list[RetrievedChunk] = []
+        raw_chunks: list[RerankableChunk] = []
 
         for document, metadata, distance in zip(documents, metadatas, distances):
-            url = metadata.get("url", "")
+            metadata = metadata or {}
+
+            url = (
+                metadata.get("source_url")
+                or metadata.get("url")
+                or ""
+            )
+
             title = metadata.get("title", "Untitled Page")
+            section_heading = metadata.get("section_heading", "")
+            chunk_type = metadata.get("chunk_type", "")
 
-            # ChromaDB distance is better when lower, so we subtract it.
-            vector_score = -float(distance)
-            page_score = get_page_priority(intent, url, title)
-            keyword_score = keyword_overlap_score(question, document)
-
-            rerank_score = vector_score + page_score + keyword_score
-
-            chunks.append(
-                RetrievedChunk(
+            raw_chunks.append(
+                RerankableChunk(
                     text=document,
                     url=url,
                     title=title,
+                    section_heading=section_heading,
+                    chunk_type=chunk_type,
+                    metadata=metadata,
                     distance=float(distance),
-                    rerank_score=rerank_score,
                 )
             )
 
-        chunks.sort(key=lambda chunk: chunk.rerank_score, reverse=True)
+        intent = identify_intent(question)
 
-        return chunks
+        reranked_chunks = rerank_chunks(
+            question=question,
+            intent=intent,
+            chunks=raw_chunks,
+            top_n=FINAL_TOP_K,
+        )
+
+        return [
+            RetrievedChunk(
+                text=chunk.text,
+                url=chunk.url,
+                title=chunk.title,
+                section_heading=chunk.section_heading,
+                chunk_type=chunk.chunk_type,
+                metadata=chunk.metadata or {},
+                distance=chunk.distance,
+                rerank_score=chunk.rerank_score,
+            )
+            for chunk in reranked_chunks
+        ]
 
     def build_answer(self, question: str, chunks: list[RetrievedChunk]) -> str:
         """
@@ -595,7 +543,7 @@ class NeuralRaysChatbot:
         sources = []
 
         for chunk in chunks:
-            if chunk.url not in sources:
+            if chunk.url and chunk.url not in sources:
                 sources.append(chunk.url)
 
         return {
@@ -640,7 +588,6 @@ def run_chatbot() -> None:
     print("Neural Rays RAG Chatbot")
     print("Type 'exit' to quit.\n")
 
-    # Load model and database before first question
     chatbot = get_chatbot()
 
     while True:
