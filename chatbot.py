@@ -33,8 +33,8 @@ COLLECTION_NAME = "neuralrays_website"
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
 # Retrieve more chunks first, then let reranker.py reduce them to the best few.
-INITIAL_RETRIEVAL_K = 12
-FINAL_TOP_K = 6
+INITIAL_RETRIEVAL_K = 20
+FINAL_TOP_K = 3
 
 
 @dataclass

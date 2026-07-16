@@ -1,0 +1,182 @@
+{
+  "tenant_id": "neuralrays",
+  "adapter_name": "simple",
+  "run_timestamp": "20260716_170830",
+  "total_questions": 6,
+  "summary": {
+    "total_questions": 6,
+    "passed": 3,
+    "failed": 3,
+    "pass_rate": 0.5,
+    "average_faithfulness": 0.296,
+    "average_correctness": 0.129,
+    "average_context_precision": 0.303,
+    "average_answer_relevancy": 0.558,
+    "average_hallucination": 0.704,
+    "average_source_presence": 1.0
+  },
+  "results": [
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0001",
+      "question": "What are the main points covered in NeuralRays AI?",
+      "answer": "The NeuralRays AI homepage presents the company as an AI and digital technology partner focused on artificial intelligence, data-driven solutions, digital services, ethical AI, agile delivery and lean product development. It introduces Neural Rays as a company that helps clients design and build transformational digital products and business outcomes.\n\nThe main areas signposted from the site include AI Services, Digital Services, Success Stories, and ways to contact the company.\n\nSupporting context from the top reranked chunk:\n- NeuralRays AI develops advanced artificial intelligence and data-driven software solutions for clients across a variety of sectors.\n- Every good AI strategy is built upon a successful data strategy. We can help you get started on your AI journey.\n\nMost relevant page: NeuralRays AI\nSource: https://neuralrays.ai",
+      "sources": [
+        "https://neuralrays.ai"
+      ],
+      "source_url": "https://neuralrays.ai",
+      "metrics": {
+        "faithfulness": 0.5,
+        "correctness": 0.174,
+        "context_precision": 0.25,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.5,
+        "source_presence": 1.0
+      },
+      "passed": true,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0002",
+      "question": "What does About Us - NeuralRays AI say about the organisation and its team?",
+      "answer": "Neural Rays AI is an AI and data-driven software company focused on building transformational digital products and outcomes. The organisation highlights ethical AI, data analysis, agile delivery, lean product development, and the use of artificial intelligence to solve business problems.\n\nThe About Us page also lists the core team:\n- Rajkumar Srinivasan, Solutions Director\n- Balaji Kalidhasan, Technical Lead\n- Satish Namburi, Solutions Director\n- Hemkumar Lakshminarayanan, Technical Director\n- Thilagavathi Ravikumar, Finance Executive\n- Anirban Bose, Product Director\n- Iswarya Selvam, QA Lead\n- Srinivasan B Kada, CBO\n- Senthil Loganathan, CEO\n- Sathiyan Sivaprakasam, DevOps Architect\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us"
+      ],
+      "source_url": "https://neuralrays.ai/about-us",
+      "metrics": {
+        "faithfulness": 0.136,
+        "correctness": 0.127,
+        "context_precision": 0.25,
+        "answer_relevancy": 0.75,
+        "hallucination": 0.864,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0003",
+      "question": "What AI services or capabilities are described in AI Services - NeuralRays AI?",
+      "answer": "The NeuralRays AI homepage presents the company as an AI and digital technology partner focused on artificial intelligence, data-driven solutions, digital services, ethical AI, agile delivery and lean product development. It introduces Neural Rays as a company that helps clients design and build transformational digital products and business outcomes.\n\nThe main areas signposted from the site include AI Services, Digital Services, Success Stories, and ways to contact the company.\n\nSupporting context from the top reranked chunk:\n- NeuralRays AI develops advanced artificial intelligence and data-driven software solutions for clients across a variety of sectors.\n- Every good AI strategy is built upon a successful data strategy. We can help you get started on your AI journey.\n\nMost relevant page: NeuralRays AI\nSource: https://neuralrays.ai",
+      "sources": [
+        "https://neuralrays.ai"
+      ],
+      "source_url": "https://neuralrays.ai/ai-services",
+      "metrics": {
+        "faithfulness": 0.412,
+        "correctness": 0.136,
+        "context_precision": 0.5,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.588,
+        "source_presence": 1.0
+      },
+      "passed": true,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0004",
+      "question": "What contact or location information is provided in Contact Us - NeuralRays AI?",
+      "answer": "The NeuralRays AI homepage presents the company as an AI and digital technology partner focused on artificial intelligence, data-driven solutions, digital services, ethical AI, agile delivery and lean product development. It introduces Neural Rays as a company that helps clients design and build transformational digital products and business outcomes.\n\nThe main areas signposted from the site include AI Services, Digital Services, Success Stories, and ways to contact the company.\n\nSupporting context from the top reranked chunk:\n- NeuralRays AI develops advanced artificial intelligence and data-driven software solutions for clients across a variety of sectors.\n- We help you leverage the power of AI to transform your business outcomes regardless of where you are on your data science journey.\n\nMost relevant page: NeuralRays AI\nSource: https://neuralrays.ai",
+      "sources": [
+        "https://neuralrays.ai"
+      ],
+      "source_url": "https://neuralrays.ai/contact",
+      "metrics": {
+        "faithfulness": 0.046,
+        "correctness": 0.158,
+        "context_precision": 0.25,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.954,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0005",
+      "question": "What digital services or capabilities are described in Digital Services - NeuralRays AI?",
+      "answer": "The NeuralRays AI homepage presents the company as an AI and digital technology partner focused on artificial intelligence, data-driven solutions, digital services, ethical AI, agile delivery and lean product development. It introduces Neural Rays as a company that helps clients design and build transformational digital products and business outcomes.\n\nThe main areas signposted from the site include AI Services, Digital Services, Success Stories, and ways to contact the company.\n\nSupporting context from the top reranked chunk:\n- NeuralRays AI develops advanced artificial intelligence and data-driven software solutions for clients across a variety of sectors. Our clients are empowered by transformational digital products and outcomes, all built on the principles of ethical AI.\n- We help mitigate risks and deliver superior digital experience with our “automation first” approach to ensure flawless performance.\n\nMost relevant page: NeuralRays AI\nSource: https://neuralrays.ai",
+      "sources": [
+        "https://neuralrays.ai"
+      ],
+      "source_url": "https://neuralrays.ai/digital-service",
+      "metrics": {
+        "faithfulness": 0.356,
+        "correctness": 0.124,
+        "context_precision": 0.4,
+        "answer_relevancy": 0.6,
+        "hallucination": 0.644,
+        "source_presence": 1.0
+      },
+      "passed": true,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    },
+    {
+      "tenant_id": "neuralrays",
+      "question_id": "auto_q0006",
+      "question": "What case studies or success stories are described in Success Stories - NeuralRays AI?",
+      "answer": "The NeuralRays AI homepage presents the company as an AI and digital technology partner focused on artificial intelligence, data-driven solutions, digital services, ethical AI, agile delivery and lean product development. It introduces Neural Rays as a company that helps clients design and build transformational digital products and business outcomes.\n\nThe main areas signposted from the site include AI Services, Digital Services, Success Stories, and ways to contact the company.\n\nSupporting context from the top reranked chunk:\n- NeuralRays AI develops advanced artificial intelligence and data-driven software solutions for clients across a variety of sectors.\n- Every good AI strategy is built upon a successful data strategy. We can help you get started on your AI journey.\n\nMost relevant page: NeuralRays AI\nSource: https://neuralrays.ai",
+      "sources": [
+        "https://neuralrays.ai"
+      ],
+      "source_url": "https://neuralrays.ai/success-stories",
+      "metrics": {
+        "faithfulness": 0.324,
+        "correctness": 0.053,
+        "context_precision": 0.167,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.676,
+        "source_presence": 1.0
+      },
+      "passed": false,
+      "explanations": {
+        "faithfulness": "Proxy score based on how much of the answer is supported by the source context.",
+        "correctness": "Proxy score based on overlap between the answer and expected source context.",
+        "context_precision": "Proxy score based on whether the context contains terms relevant to the question.",
+        "answer_relevancy": "Proxy score based on overlap between the question and answer.",
+        "hallucination": "Proxy hallucination risk. Lower is better.",
+        "source_presence": "Checks whether the RAG answer returned source URLs."
+      }
+    }
+  ]
+}
