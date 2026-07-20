@@ -5,3 +5,4 @@ __pycache__/
 data/chroma_db/
 .DS_Store
 pii/audit_log.jsonl
+pii/pii_tokens.sqlite3
