@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RAG Evaluation Dashboard - neuralrays</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      margin: 0;
+      padding: 24px;
+      color: #1f2937;
+    }
+
+    h1, h2 {
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    }
+
+    .card-title {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .card-value {
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #111827;
+    }
+
+    .card-note {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    th {
+      background: #111827;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .pass {
+      color: #047857;
+      font-weight: bold;
+    }
+
+    .fail {
+      color: #b91c1c;
+      font-weight: bold;
+    }
+
+    .note {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      padding: 14px;
+      border-radius: 10px;
+      color: #7c2d12;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Domain-Agnostic RAG Evaluation Dashboard</h1>
+  <div class="subtitle">
+    Tenant: <strong>neuralrays</strong> |
+    Adapter: <strong>simple</strong> |
+    Created: <strong>2026-07-21T15:07:56</strong>
+  </div>
+
+  <h2>Quality Metrics</h2>
+  <div class="grid">
+    
+    <div class="card">
+      <div class="card-title">Pass Rate</div>
+      <div class="card-value">100.0%</div>
+      <div class="card-note">Overall pass percentage</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Faithfulness</div>
+      <div class="card-value">0.6145</div>
+      <div class="card-note">Grounding in context</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Correctness</div>
+      <div class="card-value">0.1610</div>
+      <div class="card-note">Answer/context overlap</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Context Precision</div>
+      <div class="card-value">0.6527</div>
+      <div class="card-note">Retrieval quality proxy</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Answer Relevancy</div>
+      <div class="card-value">0.4445</div>
+      <div class="card-note">Question/answer match</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Hallucination</div>
+      <div class="card-value">0.3855</div>
+      <div class="card-note">Lower is better</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Source Presence</div>
+      <div class="card-value">1.0000</div>
+      <div class="card-note">Source URL returned</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Overall RAG Score</div>
+      <div class="card-value">0.6643</div>
+      <div class="card-note">Quality + latency + cost</div>
+    </div>
+    
+  </div>
+
+  <h2>Operational Metrics</h2>
+  <div class="grid">
+    
+    <div class="card">
+      <div class="card-title">Avg Retrieval Latency</div>
+      <div class="card-value">47.48 ms</div>
+      <div class="card-note">Vector retrieval time</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Avg Generation Latency</div>
+      <div class="card-value">0.04 ms</div>
+      <div class="card-note">Answer building time</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Avg Total Latency</div>
+      <div class="card-value">47.52 ms</div>
+      <div class="card-note">End-to-end answer time</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Avg Prompt Tokens</div>
+      <div class="card-value">416</div>
+      <div class="card-note">Estimated input tokens</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Avg Completion Tokens</div>
+      <div class="card-value">66</div>
+      <div class="card-note">Estimated output tokens</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Avg Total Tokens</div>
+      <div class="card-value">483</div>
+      <div class="card-note">Prompt + completion</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Estimated Cost USD</div>
+      <div class="card-value">0.00000000</div>
+      <div class="card-note">Defaults to zero locally</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Latency Score</div>
+      <div class="card-value">0.9953</div>
+      <div class="card-note">Higher is better</div>
+    </div>
+    
+  </div>
+
+  <div class="note">
+    Estimated cost defaults to 0.0 because this prototype uses local models and does not call a paid external LLM.
+  </div>
+
+  <h2>Per-Question Results</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Question</th>
+        <th>Status</th>
+        <th>Faithfulness</th>
+        <th>Correctness</th>
+        <th>Context Precision</th>
+        <th>Answer Relevancy</th>
+        <th>Hallucination</th>
+        <th>Total Latency ms</th>
+        <th>Total Tokens</th>
+        <th>Overall RAG Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+            <tr>
+              <td>auto_q0001</td>
+              <td>What are the main points covered in NeuralRays AI?</td>
+              <td class="pass">PASS</td>
+              <td>0.7778</td>
+              <td>0.0714</td>
+              <td>0.3520</td>
+              <td>0.0000</td>
+              <td>0.2222</td>
+              <td>200.29</td>
+              <td>416</td>
+              <td>0.5943</td>
+            </tr>
+            
+
+            <tr>
+              <td>auto_q0002</td>
+              <td>What does About Us - NeuralRays AI say about the organisation and its team?</td>
+              <td class="pass">PASS</td>
+              <td>0.0541</td>
+              <td>0.0278</td>
+              <td>0.9722</td>
+              <td>0.5000</td>
+              <td>0.9459</td>
+              <td>18.22</td>
+              <td>570</td>
+              <td>0.5475</td>
+            </tr>
+            
+
+            <tr>
+              <td>auto_q0003</td>
+              <td>What AI services or capabilities are described in AI Services - NeuralRays AI?</td>
+              <td class="pass">PASS</td>
+              <td>0.6552</td>
+              <td>0.0913</td>
+              <td>0.8029</td>
+              <td>0.5000</td>
+              <td>0.3448</td>
+              <td>17.86</td>
+              <td>535</td>
+              <td>0.6936</td>
+            </tr>
+            
+
+            <tr>
+              <td>auto_q0004</td>
+              <td>What contact or location information is provided in Contact Us - NeuralRays AI?</td>
+              <td class="pass">PASS</td>
+              <td>0.5789</td>
+              <td>0.6111</td>
+              <td>0.8889</td>
+              <td>0.5000</td>
+              <td>0.4211</td>
+              <td>18.45</td>
+              <td>330</td>
+              <td>0.7541</td>
+            </tr>
+            
+
+            <tr>
+              <td>auto_q0005</td>
+              <td>What digital services or capabilities are described in Digital Services - NeuralRays AI?</td>
+              <td class="pass">PASS</td>
+              <td>0.7600</td>
+              <td>0.0909</td>
+              <td>0.4880</td>
+              <td>0.6667</td>
+              <td>0.2400</td>
+              <td>15.46</td>
+              <td>525</td>
+              <td>0.7019</td>
+            </tr>
+            
+
+            <tr>
+              <td>auto_q0006</td>
+              <td>What case studies or success stories are described in Success Stories - NeuralRays AI?</td>
+              <td class="pass">PASS</td>
+              <td>0.8611</td>
+              <td>0.0735</td>
+              <td>0.4123</td>
+              <td>0.5000</td>
+              <td>0.1389</td>
+              <td>14.83</td>
+              <td>520</td>
+              <td>0.6942</td>
+            </tr>
+            
+    </tbody>
+  </table>
+</body>
+</html>

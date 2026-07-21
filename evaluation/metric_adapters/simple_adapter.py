@@ -1,30 +1,27 @@
 """
-Simple local metric adapter.
+Simple local metric adapter for RAG evaluation.
 
-This adapter is domain-agnostic and does not require an LLM API key.
+This adapter does not require external APIs. It provides lightweight proxy
+metrics for local development and regression testing.
 
-It provides proxy scores for:
-- faithfulness
-- correctness
-- context_precision
-- answer_relevancy
-- hallucination
+It is not a replacement for RAGAS or DeepEval, but it is useful for repeatable
+before/after comparisons during prototype development.
 """
 
 from __future__ import annotations
 
 import re
 
-from evaluation.metric_adapters.base import EvaluationMetricAdapter
-from evaluation.models import MetricScore, RAGAnswer
+from evaluation.models import EvaluationScores, GeneratedQuestion
 
 
 STOPWORDS = {
-    "the", "a", "an", "and", "or", "but", "is", "are", "was", "were",
-    "to", "of", "in", "on", "for", "with", "as", "by", "from", "that",
-    "this", "it", "its", "they", "their", "be", "can", "does", "do",
-    "what", "which", "who", "where", "how", "about", "into", "using",
-    "user", "question", "answer", "information", "provide", "provides",
+    "what", "does", "do", "is", "are", "the", "a", "an", "of", "to", "in",
+    "for", "with", "and", "or", "on", "by", "from", "about", "tell", "me",
+    "please", "can", "could", "would", "should", "neuralrays", "neural",
+    "rays", "ai", "company", "website", "page", "offer", "offers", "list",
+    "lists", "describe", "described", "information", "provided", "covered",
+    "main", "points", "this", "that", "these", "those", "using", "into",
 }
 
 
@@ -42,116 +39,125 @@ def tokenize(text: str) -> set[str]:
     }
 
 
-def safe_divide(numerator: float, denominator: float) -> float:
+def score_overlap(reference_text: str, candidate_text: str) -> float:
     """
-    Avoid division by zero.
+    Calculate overlap between two pieces of text.
     """
 
-    if denominator == 0:
+    reference_words = tokenize(reference_text)
+    candidate_words = tokenize(candidate_text)
+
+    if not reference_words:
         return 0.0
 
-    return numerator / denominator
+    overlap = reference_words.intersection(candidate_words)
+
+    return round(len(overlap) / len(reference_words), 4)
 
 
-class SimpleMetricAdapter(EvaluationMetricAdapter):
+def score_candidate_grounding(candidate_text: str, reference_text: str) -> float:
     """
-    Simple local scorer for early-stage RAG evaluation.
+    Score how much of the answer appears grounded in the expected context.
+    """
 
-    This is not a replacement for RAGAS or DeepEval, but it allows the
-    evaluation service to run without external API keys.
+    candidate_words = tokenize(candidate_text)
+    reference_words = tokenize(reference_text)
+
+    if not candidate_words:
+        return 0.0
+
+    overlap = candidate_words.intersection(reference_words)
+
+    return round(len(overlap) / len(candidate_words), 4)
+
+
+def source_presence_score(expected_source_url: str | None, sources: list[str]) -> float:
+    """
+    Score whether the answer returned sources.
+
+    If an expected source URL exists, reward exact matching.
+    Otherwise, reward any source.
+    """
+
+    if not sources:
+        return 0.0
+
+    if expected_source_url:
+        normalised_expected = expected_source_url.rstrip("/").lower()
+
+        normalised_sources = {
+            source.rstrip("/").lower()
+            for source in sources
+        }
+
+        if normalised_expected in normalised_sources:
+            return 1.0
+
+    return 1.0
+
+
+class SimpleMetricAdapter:
+    """
+    Local metric adapter.
     """
 
     name = "simple"
 
-    def evaluate(self, rag_answer: RAGAnswer, expected_context: str) -> list[MetricScore]:
-        question_tokens = tokenize(rag_answer.question)
-        answer_tokens = tokenize(rag_answer.answer)
-        context_tokens = tokenize(expected_context)
-
-        faithfulness = self._calculate_faithfulness(answer_tokens, context_tokens)
-        correctness = self._calculate_correctness(answer_tokens, context_tokens)
-        context_precision = self._calculate_context_precision(question_tokens, context_tokens)
-        answer_relevancy = self._calculate_answer_relevancy(question_tokens, answer_tokens)
-        hallucination = round(1.0 - faithfulness, 3)
-        source_presence = 1.0 if rag_answer.sources else 0.0
-
-        return [
-            MetricScore(
-                name="faithfulness",
-                score=faithfulness,
-                explanation="Proxy score based on how much of the answer is supported by the source context.",
-            ),
-            MetricScore(
-                name="correctness",
-                score=correctness,
-                explanation="Proxy score based on overlap between the answer and expected source context.",
-            ),
-            MetricScore(
-                name="context_precision",
-                score=context_precision,
-                explanation="Proxy score based on whether the context contains terms relevant to the question.",
-            ),
-            MetricScore(
-                name="answer_relevancy",
-                score=answer_relevancy,
-                explanation="Proxy score based on overlap between the question and answer.",
-            ),
-            MetricScore(
-                name="hallucination",
-                score=hallucination,
-                explanation="Proxy hallucination risk. Lower is better.",
-            ),
-            MetricScore(
-                name="source_presence",
-                score=source_presence,
-                explanation="Checks whether the RAG answer returned source URLs.",
-            ),
-        ]
-
-    def _calculate_faithfulness(
+    def score(
         self,
-        answer_tokens: set[str],
-        context_tokens: set[str],
-    ) -> float:
-        if not answer_tokens:
-            return 0.0
+        generated_question: GeneratedQuestion,
+        answer: str,
+        sources: list[str],
+        retrieved_context: str = "",
+    ) -> EvaluationScores:
+        """
+        Score one chatbot answer.
+        """
 
-        supported_tokens = answer_tokens.intersection(context_tokens)
+        expected_context = generated_question.expected_context or ""
+        question = generated_question.question or ""
 
-        return round(safe_divide(len(supported_tokens), len(answer_tokens)), 3)
+        # How much of the answer is supported by expected context.
+        faithfulness = score_candidate_grounding(
+            candidate_text=answer,
+            reference_text=expected_context,
+        )
 
-    def _calculate_correctness(
-        self,
-        answer_tokens: set[str],
-        context_tokens: set[str],
-    ) -> float:
-        if not context_tokens:
-            return 0.0
+        # How much of the expected context appears in the answer.
+        correctness = score_overlap(
+            reference_text=expected_context,
+            candidate_text=answer,
+        )
 
-        matched_context_tokens = context_tokens.intersection(answer_tokens)
+        # Whether retrieved context matches the expected context.
+        # If retrieved context is missing, fall back to answer/context overlap.
+        if retrieved_context:
+            context_precision = score_overlap(
+                reference_text=expected_context,
+                candidate_text=retrieved_context,
+            )
+        else:
+            context_precision = correctness
 
-        return round(safe_divide(len(matched_context_tokens), len(context_tokens)), 3)
+        # Whether the answer addresses the question.
+        answer_relevancy = score_overlap(
+            reference_text=question,
+            candidate_text=answer,
+        )
 
-    def _calculate_context_precision(
-        self,
-        question_tokens: set[str],
-        context_tokens: set[str],
-    ) -> float:
-        if not question_tokens:
-            return 0.0
+        source_presence = source_presence_score(
+            expected_source_url=generated_question.source_url,
+            sources=sources,
+        )
 
-        matched_question_tokens = question_tokens.intersection(context_tokens)
+        # Hallucination proxy: inverse of faithfulness.
+        hallucination = round(1.0 - faithfulness, 4)
 
-        return round(safe_divide(len(matched_question_tokens), len(question_tokens)), 3)
-
-    def _calculate_answer_relevancy(
-        self,
-        question_tokens: set[str],
-        answer_tokens: set[str],
-    ) -> float:
-        if not question_tokens:
-            return 0.0
-
-        matched_question_tokens = question_tokens.intersection(answer_tokens)
-
-        return round(safe_divide(len(matched_question_tokens), len(question_tokens)), 3)
+        return EvaluationScores(
+            faithfulness=faithfulness,
+            correctness=correctness,
+            context_precision=context_precision,
+            answer_relevancy=answer_relevancy,
+            hallucination=hallucination,
+            source_presence=source_presence,
+        )

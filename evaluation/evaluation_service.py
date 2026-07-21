@@ -1,178 +1,418 @@
 """
 Domain-agnostic RAG evaluation service.
 
-General flow:
-Documents -> Chunking + Embedding + Metadata -> Shared Vector Store
--> tenant_id filter -> Evaluation Service -> Auto Question Generator
--> RAG Service -> Metric Adapter -> Results
+This service:
+1. Loads chunks for a tenant from ChromaDB
+2. Generates evaluation questions automatically
+3. Runs the chatbot
+4. Scores answer quality
+5. Measures operational metrics such as latency and estimated cost
+6. Saves JSON results
+7. Prints a summary for quick comparison
 
-Run from the project root:
+Run from project root:
 
-    python -m evaluation.evaluation_service --tenant_id neuralrays --adapter simple
+    python -m evaluation.evaluation_service --tenant_id neuralrays --adapter simple --max_questions 10
 """
 
 from __future__ import annotations
 
 import argparse
-import sys
+import json
+import math
+import os
+import time
+from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
+from statistics import mean
+from typing import Any
 
-from evaluation.config import (
-    DEFAULT_ADAPTER,
-    DEFAULT_COLLECTION_NAME,
-    DEFAULT_MAX_QUESTIONS,
-    DEFAULT_TENANT_ID,
-)
 from evaluation.dataset_generator import (
     generate_questions_from_chunks,
     load_chunks_from_vector_store,
 )
-from evaluation.metric_adapters.base import EvaluationMetricAdapter
-from evaluation.metric_adapters.deepeval_adapter import DeepEvalMetricAdapter
-from evaluation.metric_adapters.ragas_adapter import RagasMetricAdapter
 from evaluation.metric_adapters.simple_adapter import SimpleMetricAdapter
-from evaluation.models import EvaluationResult, EvaluationRun, RAGAnswer
-from evaluation.storage import save_evaluation_run
-
-# Allow imports from project root, including chatbot.py
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-sys.path.append(str(PROJECT_ROOT))
-
-from chatbot import answer_question  # noqa: E402
+from evaluation.models import (
+    EvaluationQuestionResult,
+    EvaluationRunResult,
+    GeneratedQuestion,
+    OperationalMetrics,
+)
 
 
-def get_metric_adapter(adapter_name: str) -> EvaluationMetricAdapter:
+RESULTS_ROOT = Path("evaluation/results")
+
+# These default to zero because the current prototype does not call a paid LLM.
+# They can be changed later for OpenAI/Azure/Gemini cost estimation.
+DEFAULT_INPUT_COST_PER_1K_TOKENS = float(
+    os.getenv("EVAL_INPUT_COST_PER_1K_TOKENS", "0.0")
+)
+DEFAULT_OUTPUT_COST_PER_1K_TOKENS = float(
+    os.getenv("EVAL_OUTPUT_COST_PER_1K_TOKENS", "0.0")
+)
+
+
+def estimate_tokens(text: str) -> int:
     """
-    Return the selected metric adapter.
+    Estimate token count from text.
+
+    This is a lightweight approximation for local evaluation.
+    A common rough estimate is around 1.3 tokens per word.
     """
 
-    adapter_name = adapter_name.lower().strip()
+    if not text:
+        return 0
+
+    word_count = len(text.split())
+
+    return max(1, math.ceil(word_count * 1.3))
+
+
+def estimate_cost_usd(
+    prompt_tokens: int,
+    completion_tokens: int,
+    input_cost_per_1k: float = DEFAULT_INPUT_COST_PER_1K_TOKENS,
+    output_cost_per_1k: float = DEFAULT_OUTPUT_COST_PER_1K_TOKENS,
+) -> float:
+    """
+    Estimate LLM cost.
+
+    Since the current prototype uses local models and rule-based generation,
+    the default is zero. This function makes the framework ready for paid LLMs.
+    """
+
+    input_cost = (prompt_tokens / 1000.0) * input_cost_per_1k
+    output_cost = (completion_tokens / 1000.0) * output_cost_per_1k
+
+    return round(input_cost + output_cost, 8)
+
+
+def load_metric_adapter(adapter_name: str) -> SimpleMetricAdapter:
+    """
+    Load a metric adapter by name.
+    """
+
+    adapter_name = adapter_name.strip().lower()
 
     if adapter_name == "simple":
         return SimpleMetricAdapter()
 
-    if adapter_name == "ragas":
-        return RagasMetricAdapter()
-
-    if adapter_name == "deepeval":
-        return DeepEvalMetricAdapter()
-
     raise ValueError(
-        f"Unsupported adapter '{adapter_name}'. Use one of: simple, ragas, deepeval."
+        f"Unsupported adapter: {adapter_name}. Currently supported: simple"
     )
 
 
-def run_rag_service(question: str, tenant_id: str, question_id: str, expected_context: str) -> RAGAnswer:
+def load_chatbot_instance() -> Any:
     """
-    Send the question to the existing RAG chatbot.
+    Load the project chatbot.
 
-    Current limitation:
-    The existing chatbot is not fully tenant-aware yet and does not return
-    retrieved contexts. For this first version, the generated source chunk is
-    used as the evaluation context.
+    The current NeuralRays chatbot has separate retrieve_relevant_chunks and
+    build_answer methods, which lets us measure retrieval and generation timing
+    separately. If a future chatbot only exposes answer_question, the service
+    can still be adapted.
     """
 
-    chatbot_response = answer_question(question)
+    from chatbot import get_chatbot
 
-    return RAGAnswer(
-        tenant_id=tenant_id,
-        question_id=question_id,
-        question=question,
-        answer=chatbot_response.get("answer", ""),
-        sources=chatbot_response.get("sources", []),
-        contexts=[expected_context],
+    return get_chatbot()
+
+
+def run_chatbot_with_timing(
+    chatbot: Any,
+    question: str,
+) -> tuple[str, list[str], str, OperationalMetrics]:
+    """
+    Run the chatbot and measure retrieval/generation timing.
+
+    Returns:
+        answer
+        sources
+        retrieved_context
+        operational_metrics
+    """
+
+    retrieval_start = time.perf_counter()
+
+    if hasattr(chatbot, "retrieve_relevant_chunks") and hasattr(chatbot, "build_answer"):
+        chunks = chatbot.retrieve_relevant_chunks(question)
+        retrieval_latency_ms = (time.perf_counter() - retrieval_start) * 1000.0
+
+        generation_start = time.perf_counter()
+        answer = chatbot.build_answer(question, chunks)
+        generation_latency_ms = (time.perf_counter() - generation_start) * 1000.0
+
+        sources: list[str] = []
+        retrieved_context_parts: list[str] = []
+
+        for chunk in chunks:
+            chunk_url = getattr(chunk, "url", "")
+
+            if chunk_url and chunk_url not in sources:
+                sources.append(chunk_url)
+
+            chunk_text = getattr(chunk, "text", "")
+
+            if chunk_text:
+                retrieved_context_parts.append(chunk_text)
+
+        retrieved_context = "\n\n".join(retrieved_context_parts)
+
+    else:
+        response = chatbot.answer_question(question)
+        total_latency_ms = (time.perf_counter() - retrieval_start) * 1000.0
+
+        answer = str(response.get("answer", ""))
+        sources = list(response.get("sources", []))
+        retrieved_context = ""
+
+        retrieval_latency_ms = 0.0
+        generation_latency_ms = total_latency_ms
+
+    total_latency_ms = retrieval_latency_ms + generation_latency_ms
+
+    prompt_text = f"Question:\n{question}\n\nContext:\n{retrieved_context}"
+    estimated_prompt_tokens = estimate_tokens(prompt_text)
+    estimated_completion_tokens = estimate_tokens(answer)
+    estimated_total_tokens = estimated_prompt_tokens + estimated_completion_tokens
+
+    estimated_cost = estimate_cost_usd(
+        prompt_tokens=estimated_prompt_tokens,
+        completion_tokens=estimated_completion_tokens,
+    )
+
+    operational_metrics = OperationalMetrics(
+        retrieval_latency_ms=round(retrieval_latency_ms, 2),
+        generation_latency_ms=round(generation_latency_ms, 2),
+        total_latency_ms=round(total_latency_ms, 2),
+        estimated_prompt_tokens=estimated_prompt_tokens,
+        estimated_completion_tokens=estimated_completion_tokens,
+        estimated_total_tokens=estimated_total_tokens,
+        estimated_cost_usd=estimated_cost,
+    )
+
+    return answer, sources, retrieved_context, operational_metrics
+
+
+def evaluate_question(
+    generated_question: GeneratedQuestion,
+    chatbot: Any,
+    adapter: SimpleMetricAdapter,
+) -> EvaluationQuestionResult:
+    """
+    Evaluate one generated question.
+    """
+
+    answer, sources, retrieved_context, operational_metrics = run_chatbot_with_timing(
+        chatbot=chatbot,
+        question=generated_question.question,
+    )
+
+    scores = adapter.score(
+        generated_question=generated_question,
+        answer=answer,
+        sources=sources,
+        retrieved_context=retrieved_context,
+    )
+
+    # Keep pass/fail simple and stable for local evaluation.
+    # Source presence is required because this is a grounded RAG system.
+    passed = (
+        scores.source_presence >= 1.0
+        and scores.overall_quality_score >= 0.35
+    )
+
+    return EvaluationQuestionResult(
+        question_id=generated_question.question_id,
+        question=generated_question.question,
+        source_url=generated_question.source_url,
+        answer=answer,
+        sources=sources,
+        passed=passed,
+        scores=scores,
+        operational_metrics=operational_metrics,
+        metadata={
+            "source_chunk_id": generated_question.source_chunk_id,
+            "question_metadata": generated_question.metadata,
+        },
     )
 
 
-def calculate_pass_status(metrics: dict[str, float]) -> bool:
+def average(values: list[float]) -> float:
     """
-    Decide whether a question passed.
-
-    Hallucination is inverted because lower is better.
+    Safely average values.
     """
 
-    faithfulness = metrics.get("faithfulness", 0.0)
-    answer_relevancy = metrics.get("answer_relevancy", 0.0)
-    context_precision = metrics.get("context_precision", 0.0)
-    hallucination = metrics.get("hallucination", 1.0)
+    if not values:
+        return 0.0
 
-    return (
-        faithfulness >= 0.30
-        and answer_relevancy >= 0.20
-        and context_precision >= 0.20
-        and hallucination <= 0.70
-    )
+    return round(mean(values), 4)
 
 
-def calculate_summary(results: list[EvaluationResult]) -> dict[str, float | int]:
+def summarise_results(
+    tenant_id: str,
+    adapter_name: str,
+    question_results: list[EvaluationQuestionResult],
+) -> EvaluationRunResult:
     """
-    Calculate dashboard-ready summary metrics.
+    Create an evaluation run summary.
     """
 
-    total_questions = len(results)
-
-    if total_questions == 0:
-        return {
-            "total_questions": 0,
-            "passed": 0,
-            "failed": 0,
-            "pass_rate": 0.0,
-            "average_faithfulness": 0.0,
-            "average_correctness": 0.0,
-            "average_context_precision": 0.0,
-            "average_answer_relevancy": 0.0,
-            "average_hallucination": 0.0,
-            "average_source_presence": 0.0,
-        }
-
-    passed = sum(1 for result in results if result.passed)
+    total_questions = len(question_results)
+    passed = sum(1 for result in question_results if result.passed)
     failed = total_questions - passed
 
-    def average_metric(metric_name: str) -> float:
-        return round(
-            sum(result.metrics.get(metric_name, 0.0) for result in results) / total_questions,
-            3,
+    pass_rate = round((passed / total_questions) * 100, 1) if total_questions else 0.0
+
+    average_scores = {
+        "faithfulness": average([result.scores.faithfulness for result in question_results]),
+        "correctness": average([result.scores.correctness for result in question_results]),
+        "context_precision": average([result.scores.context_precision for result in question_results]),
+        "answer_relevancy": average([result.scores.answer_relevancy for result in question_results]),
+        "hallucination": average([result.scores.hallucination for result in question_results]),
+        "source_presence": average([result.scores.source_presence for result in question_results]),
+        "overall_quality_score": average([result.scores.overall_quality_score for result in question_results]),
+    }
+
+    average_operational_metrics = {
+        "retrieval_latency_ms": average([
+            result.operational_metrics.retrieval_latency_ms
+            for result in question_results
+        ]),
+        "generation_latency_ms": average([
+            result.operational_metrics.generation_latency_ms
+            for result in question_results
+        ]),
+        "total_latency_ms": average([
+            result.operational_metrics.total_latency_ms
+            for result in question_results
+        ]),
+        "estimated_prompt_tokens": average([
+            float(result.operational_metrics.estimated_prompt_tokens)
+            for result in question_results
+        ]),
+        "estimated_completion_tokens": average([
+            float(result.operational_metrics.estimated_completion_tokens)
+            for result in question_results
+        ]),
+        "estimated_total_tokens": average([
+            float(result.operational_metrics.estimated_total_tokens)
+            for result in question_results
+        ]),
+        "estimated_cost_usd": average([
+            result.operational_metrics.estimated_cost_usd
+            for result in question_results
+        ]),
+        "latency_score": average([
+            result.operational_metrics.latency_score
+            for result in question_results
+        ]),
+        "cost_score": average([
+            result.operational_metrics.cost_score
+            for result in question_results
+        ]),
+    }
+
+    average_overall_rag_score = average([
+        result.overall_rag_score for result in question_results
+    ])
+
+    return EvaluationRunResult(
+        tenant_id=tenant_id,
+        adapter=adapter_name,
+        total_questions=total_questions,
+        passed=passed,
+        failed=failed,
+        pass_rate=pass_rate,
+        average_scores=average_scores,
+        average_operational_metrics=average_operational_metrics,
+        average_overall_rag_score=average_overall_rag_score,
+        question_results=question_results,
+        metadata={
+            "created_at": datetime.now().isoformat(timespec="seconds"),
+            "cost_note": (
+                "Estimated cost defaults to 0.0 because this prototype uses local models "
+                "and does not call a paid external LLM."
+            ),
+        },
+    )
+
+
+def save_evaluation_result(
+    result: EvaluationRunResult,
+) -> Path:
+    """
+    Save evaluation result JSON.
+    """
+
+    tenant_results_dir = RESULTS_ROOT / result.tenant_id
+    tenant_results_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_path = tenant_results_dir / f"evaluation_{timestamp}.json"
+
+    with output_path.open("w", encoding="utf-8") as file:
+        json.dump(
+            result.to_dict(),
+            file,
+            indent=2,
+            ensure_ascii=False,
         )
 
-    return {
-        "total_questions": total_questions,
-        "passed": passed,
-        "failed": failed,
-        "pass_rate": round(passed / total_questions, 3),
-        "average_faithfulness": average_metric("faithfulness"),
-        "average_correctness": average_metric("correctness"),
-        "average_context_precision": average_metric("context_precision"),
-        "average_answer_relevancy": average_metric("answer_relevancy"),
-        "average_hallucination": average_metric("hallucination"),
-        "average_source_presence": average_metric("source_presence"),
-    }
+    return output_path
+
+
+def print_summary(result: EvaluationRunResult, output_path: Path) -> None:
+    """
+    Print a readable CLI summary.
+    """
+
+    print("\nDomain-Agnostic RAG Evaluation Summary")
+    print("-------------------------------------------------------")
+    print(f"Tenant ID:                 {result.tenant_id}")
+    print(f"Adapter:                   {result.adapter}")
+    print(f"Total questions:           {result.total_questions}")
+    print(f"Passed:                    {result.passed}")
+    print(f"Failed:                    {result.failed}")
+    print(f"Pass rate:                 {result.pass_rate}%")
+
+    print(f"Average faithfulness:      {result.average_scores['faithfulness']}")
+    print(f"Average correctness:       {result.average_scores['correctness']}")
+    print(f"Average context precision: {result.average_scores['context_precision']}")
+    print(f"Average answer relevancy:  {result.average_scores['answer_relevancy']}")
+    print(f"Average hallucination:     {result.average_scores['hallucination']}")
+    print(f"Average source presence:   {result.average_scores['source_presence']}")
+
+    print("\nOperational Metrics")
+    print("-------------------------------------------------------")
+    print(f"Avg retrieval latency ms:  {result.average_operational_metrics['retrieval_latency_ms']}")
+    print(f"Avg generation latency ms: {result.average_operational_metrics['generation_latency_ms']}")
+    print(f"Avg total latency ms:      {result.average_operational_metrics['total_latency_ms']}")
+    print(f"Avg prompt tokens:         {result.average_operational_metrics['estimated_prompt_tokens']}")
+    print(f"Avg completion tokens:     {result.average_operational_metrics['estimated_completion_tokens']}")
+    print(f"Avg total tokens:          {result.average_operational_metrics['estimated_total_tokens']}")
+    print(f"Avg estimated cost USD:    {result.average_operational_metrics['estimated_cost_usd']}")
+    print(f"Avg overall RAG score:     {result.average_overall_rag_score}")
+    print("-------------------------------------------------------")
+    print(f"Saved JSON result:         {output_path}")
 
 
 def run_evaluation(
     tenant_id: str,
     adapter_name: str,
-    collection_name: str,
     max_questions: int,
-) -> EvaluationRun:
+) -> EvaluationRunResult:
     """
-    Run a full tenant evaluation.
+    Run the full evaluation.
     """
 
-    print(f"\nLoading chunks for tenant: {tenant_id}")
-    chunks = load_chunks_from_vector_store(
-        tenant_id=tenant_id,
-        collection_name=collection_name,
-    )
+    print(f"Loading chunks for tenant: {tenant_id}")
+
+    chunks = load_chunks_from_vector_store(tenant_id=tenant_id)
 
     print(f"Chunks loaded: {len(chunks)}")
-
-    if not chunks:
-        raise ValueError(
-            f"No chunks found for tenant '{tenant_id}'. Check ingestion and metadata."
-        )
-
     print("Generating evaluation questions...")
+
     generated_questions = generate_questions_from_chunks(
         chunks=chunks,
         max_questions=max_questions,
@@ -180,92 +420,32 @@ def run_evaluation(
 
     print(f"Generated questions: {len(generated_questions)}")
 
-    adapter = get_metric_adapter(adapter_name)
+    adapter = load_metric_adapter(adapter_name)
+    chatbot = load_chatbot_instance()
 
-    results: list[EvaluationResult] = []
+    question_results: list[EvaluationQuestionResult] = []
 
     for generated_question in generated_questions:
         print(f"Evaluating {generated_question.question_id}: {generated_question.question}")
 
-        rag_answer = run_rag_service(
-            question=generated_question.question,
-            tenant_id=tenant_id,
-            question_id=generated_question.question_id,
-            expected_context=generated_question.expected_context,
+        question_result = evaluate_question(
+            generated_question=generated_question,
+            chatbot=chatbot,
+            adapter=adapter,
         )
 
-        metric_scores = adapter.evaluate(
-            rag_answer=rag_answer,
-            expected_context=generated_question.expected_context,
-        )
+        question_results.append(question_result)
 
-        metrics = {
-            metric.name: metric.score
-            for metric in metric_scores
-        }
-
-        explanations = {
-            metric.name: metric.explanation
-            for metric in metric_scores
-        }
-
-        passed = calculate_pass_status(metrics)
-
-        results.append(
-            EvaluationResult(
-                tenant_id=tenant_id,
-                question_id=generated_question.question_id,
-                question=generated_question.question,
-                answer=rag_answer.answer,
-                sources=rag_answer.sources,
-                source_url=generated_question.source_url,
-                metrics=metrics,
-                passed=passed,
-                explanations=explanations,
-            )
-        )
-
-    run_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    summary = calculate_summary(results)
-
-    return EvaluationRun(
+    return summarise_results(
         tenant_id=tenant_id,
-        adapter_name=adapter.name,
-        run_timestamp=run_timestamp,
-        total_questions=len(results),
-        summary=summary,
-        results=results,
+        adapter_name=adapter_name,
+        question_results=question_results,
     )
-
-
-def print_summary(evaluation_run: EvaluationRun, output_file: Path) -> None:
-    """
-    Print the evaluation summary in the terminal.
-    """
-
-    summary = evaluation_run.summary
-
-    print("\nDomain-Agnostic RAG Evaluation Summary")
-    print("-" * 55)
-    print(f"Tenant ID:                 {evaluation_run.tenant_id}")
-    print(f"Adapter:                   {evaluation_run.adapter_name}")
-    print(f"Total questions:           {summary['total_questions']}")
-    print(f"Passed:                    {summary['passed']}")
-    print(f"Failed:                    {summary['failed']}")
-    print(f"Pass rate:                 {summary['pass_rate'] * 100:.1f}%")
-    print(f"Average faithfulness:      {summary['average_faithfulness']}")
-    print(f"Average correctness:       {summary['average_correctness']}")
-    print(f"Average context precision: {summary['average_context_precision']}")
-    print(f"Average answer relevancy:  {summary['average_answer_relevancy']}")
-    print(f"Average hallucination:     {summary['average_hallucination']}")
-    print(f"Average source presence:   {summary['average_source_presence']}")
-    print("-" * 55)
-    print(f"Results saved to:          {output_file}")
 
 
 def parse_args() -> argparse.Namespace:
     """
-    Parse command-line arguments.
+    Parse CLI arguments.
     """
 
     parser = argparse.ArgumentParser(
@@ -274,28 +454,21 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument(
         "--tenant_id",
-        default=DEFAULT_TENANT_ID,
-        help="Tenant/customer namespace to evaluate.",
+        required=True,
+        help="Tenant ID to evaluate, for example neuralrays.",
     )
 
     parser.add_argument(
         "--adapter",
-        default=DEFAULT_ADAPTER,
-        choices=["simple", "ragas", "deepeval"],
-        help="Metric adapter to use.",
-    )
-
-    parser.add_argument(
-        "--collection_name",
-        default=DEFAULT_COLLECTION_NAME,
-        help="ChromaDB collection name.",
+        default="simple",
+        help="Metric adapter to use. Currently supported: simple.",
     )
 
     parser.add_argument(
         "--max_questions",
         type=int,
-        default=DEFAULT_MAX_QUESTIONS,
-        help="Maximum number of auto-generated questions.",
+        default=10,
+        help="Maximum number of generated questions to evaluate.",
     )
 
     return parser.parse_args()
@@ -303,21 +476,19 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     """
-    CLI entry point.
+    CLI entrypoint.
     """
 
     args = parse_args()
 
-    evaluation_run = run_evaluation(
+    result = run_evaluation(
         tenant_id=args.tenant_id,
         adapter_name=args.adapter,
-        collection_name=args.collection_name,
         max_questions=args.max_questions,
     )
 
-    output_file = save_evaluation_run(evaluation_run)
-
-    print_summary(evaluation_run, output_file)
+    output_path = save_evaluation_result(result)
+    print_summary(result, output_path)
 
 
 if __name__ == "__main__":

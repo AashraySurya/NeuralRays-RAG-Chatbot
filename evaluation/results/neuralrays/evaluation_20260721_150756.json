@@ -1,0 +1,328 @@
+{
+  "tenant_id": "neuralrays",
+  "adapter": "simple",
+  "total_questions": 6,
+  "passed": 6,
+  "failed": 0,
+  "pass_rate": 100.0,
+  "average_scores": {
+    "faithfulness": 0.6145,
+    "correctness": 0.161,
+    "context_precision": 0.6527,
+    "answer_relevancy": 0.4445,
+    "hallucination": 0.3855,
+    "source_presence": 1.0,
+    "overall_quality_score": 0.5812
+  },
+  "average_operational_metrics": {
+    "retrieval_latency_ms": 47.475,
+    "generation_latency_ms": 0.04,
+    "total_latency_ms": 47.5183,
+    "estimated_prompt_tokens": 416.1667,
+    "estimated_completion_tokens": 66.5,
+    "estimated_total_tokens": 482.6667,
+    "estimated_cost_usd": 0.0,
+    "latency_score": 0.9953,
+    "cost_score": 1.0
+  },
+  "average_overall_rag_score": 0.6643,
+  "question_results": [
+    {
+      "question_id": "auto_q0001",
+      "question": "What are the main points covered in NeuralRays AI?",
+      "source_url": "https://neuralrays.ai",
+      "answer": "Based on the Neural Rays website, I found this relevant information:\n\nNeuralRays AI develops advanced artificial intelligence and data-driven software solutions for clients across a variety of sectors.\n\nMost relevant page: NeuralRays AI\nSource: https://neuralrays.ai",
+      "sources": [
+        "https://neuralrays.ai",
+        "https://neuralrays.ai/about-us"
+      ],
+      "passed": true,
+      "scores": {
+        "faithfulness": 0.7778,
+        "correctness": 0.0714,
+        "context_precision": 0.352,
+        "answer_relevancy": 0.0,
+        "hallucination": 0.2222,
+        "source_presence": 1.0
+      },
+      "operational_metrics": {
+        "retrieval_latency_ms": 200.13,
+        "generation_latency_ms": 0.16,
+        "total_latency_ms": 200.29,
+        "estimated_prompt_tokens": 370,
+        "estimated_completion_tokens": 46,
+        "estimated_total_tokens": 416,
+        "estimated_cost_usd": 0.0,
+        "latency_score": 0.9804,
+        "cost_score": 1.0
+      },
+      "overall_quality_score": 0.4965,
+      "overall_rag_score": 0.5943,
+      "metadata": {
+        "source_chunk_id": "neuralrays_neuralrays-ai_explore-now_0002_909d6a1571,neuralrays_neuralrays-ai_ai-consulting_0004_1dd943d525,neuralrays_neuralrays-ai_automation_0006_23b3291f27,neuralrays_neuralrays-ai_digital-assurance_0009_38f680cd75,neuralrays_neuralrays-ai_why-neuralrays-ai_0010_07a0a51e14,neuralrays_neuralrays-ai_global-thought-leadership_0011_7f7509acd5,neuralrays_neuralrays-ai_value-through-results_0012_8c2ec0b117,neuralrays_neuralrays-ai_flexible-engagement-models_0013_5022a0e286",
+        "question_metadata": {
+          "title": "NeuralRays AI",
+          "source_url": "https://neuralrays.ai",
+          "keywords": [
+            "section",
+            "development",
+            "outcomes",
+            "software",
+            "across"
+          ],
+          "document_type": "general",
+          "generation_method": "source_level_pattern_based",
+          "source_chunk_count": 8
+        }
+      }
+    },
+    {
+      "question_id": "auto_q0002",
+      "question": "What does About Us - NeuralRays AI say about the organisation and its team?",
+      "source_url": "https://neuralrays.ai/about-us",
+      "answer": "The Neural Rays About Us page lists its core team as:\n- Rajkumar Srinivasan, Solutions Director\n- Balaji Kalidhasan, Technical Lead\n- Satish Namburi, Solutions Director\n- Hemkumar Lakshminarayanan, Technical Director\n- Thilagavathi Ravikumar, Finance Executive\n- Anirban Bose, Product Director\n- Iswarya Selvam, QA Lead\n- Srinivasan B Kada, CBO\n- Senthil Loganathan, CEO\n- Sathiyan Sivaprakasam, DevOps Architect\n\nMost relevant page: About Us – NeuralRays AI\nSource: https://neuralrays.ai/about-us",
+      "sources": [
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai/ai-services"
+      ],
+      "passed": true,
+      "scores": {
+        "faithfulness": 0.0541,
+        "correctness": 0.0278,
+        "context_precision": 0.9722,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.9459,
+        "source_presence": 1.0
+      },
+      "operational_metrics": {
+        "retrieval_latency_ms": 18.19,
+        "generation_latency_ms": 0.03,
+        "total_latency_ms": 18.22,
+        "estimated_prompt_tokens": 479,
+        "estimated_completion_tokens": 91,
+        "estimated_total_tokens": 570,
+        "estimated_cost_usd": 0.0,
+        "latency_score": 0.9982,
+        "cost_score": 1.0
+      },
+      "overall_quality_score": 0.4347,
+      "overall_rag_score": 0.5475,
+      "metadata": {
+        "source_chunk_id": "neuralrays_neuralrays-ai-about-us_our-story_0001_301bf7c207",
+        "question_metadata": {
+          "title": "About Us - NeuralRays AI",
+          "source_url": "https://neuralrays.ai/about-us",
+          "keywords": [
+            "principles",
+            "ethical",
+            "neuralrays",
+            "positively",
+            "section"
+          ],
+          "document_type": "about",
+          "generation_method": "source_level_pattern_based",
+          "source_chunk_count": 1
+        }
+      }
+    },
+    {
+      "question_id": "auto_q0003",
+      "question": "What AI services or capabilities are described in AI Services - NeuralRays AI?",
+      "source_url": "https://neuralrays.ai/ai-services",
+      "answer": "Neural Rays offers several AI services, including:\n- Data Strategy Consulting\n- Data Science and AI Consulting\n- AI Solution Development / Custom AI Development\n- AI-Driven Automation\n\nThese services are focused on helping organisations build data strategies, use AI effectively, develop AI-powered solutions, and automate repetitive tasks.\n\nMost relevant page: AI Services – NeuralRays AI\nSource: https://neuralrays.ai/ai-services",
+      "sources": [
+        "https://neuralrays.ai/ai-services"
+      ],
+      "passed": true,
+      "scores": {
+        "faithfulness": 0.6552,
+        "correctness": 0.0913,
+        "context_precision": 0.8029,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.3448,
+        "source_presence": 1.0
+      },
+      "operational_metrics": {
+        "retrieval_latency_ms": 17.84,
+        "generation_latency_ms": 0.01,
+        "total_latency_ms": 17.86,
+        "estimated_prompt_tokens": 459,
+        "estimated_completion_tokens": 76,
+        "estimated_total_tokens": 535,
+        "estimated_cost_usd": 0.0,
+        "latency_score": 0.9982,
+        "cost_score": 1.0
+      },
+      "overall_quality_score": 0.6174,
+      "overall_rag_score": 0.6936,
+      "metadata": {
+        "source_chunk_id": "neuralrays_neuralrays-ai-ai-services_data-strategy-consulting_0001_e97ef6dcbd,neuralrays_neuralrays-ai-ai-services_data-science-and-ai-consulting_0002_15db622875,neuralrays_neuralrays-ai-ai-services_custom-ai-development_0003_d896e6662a,neuralrays_neuralrays-ai-ai-services_ai-driven-automation_0004_fed26f26c4",
+        "question_metadata": {
+          "title": "AI Services - NeuralRays AI",
+          "source_url": "https://neuralrays.ai/ai-services",
+          "keywords": [
+            "automation",
+            "section",
+            "strategy",
+            "consulting",
+            "outcomes"
+          ],
+          "document_type": "ai_services",
+          "generation_method": "source_level_pattern_based",
+          "source_chunk_count": 4
+        }
+      }
+    },
+    {
+      "question_id": "auto_q0004",
+      "question": "What contact or location information is provided in Contact Us - NeuralRays AI?",
+      "source_url": "https://neuralrays.ai/contact",
+      "answer": "You can contact Neural Rays by emailing Hello@NeuralRays.AI. The website says they are based in Chennai, India; Dubai, UAE; and London, UK, and serve clients globally.\n\nMost relevant page: Contact Us – NeuralRays AI\nSource: https://neuralrays.ai/contact",
+      "sources": [
+        "https://neuralrays.ai/contact",
+        "https://neuralrays.ai/about-us"
+      ],
+      "passed": true,
+      "scores": {
+        "faithfulness": 0.5789,
+        "correctness": 0.6111,
+        "context_precision": 0.8889,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.4211,
+        "source_presence": 1.0
+      },
+      "operational_metrics": {
+        "retrieval_latency_ms": 18.44,
+        "generation_latency_ms": 0.0,
+        "total_latency_ms": 18.45,
+        "estimated_prompt_tokens": 283,
+        "estimated_completion_tokens": 47,
+        "estimated_total_tokens": 330,
+        "estimated_cost_usd": 0.0,
+        "latency_score": 0.9982,
+        "cost_score": 1.0
+      },
+      "overall_quality_score": 0.693,
+      "overall_rag_score": 0.7541,
+      "metadata": {
+        "source_chunk_id": "neuralrays_neuralrays-ai-contact_hello-neuralrays-ai_0002_f077d4b09a",
+        "question_metadata": {
+          "title": "Contact Us - NeuralRays AI",
+          "source_url": "https://neuralrays.ai/contact",
+          "keywords": [
+            "section",
+            "hello",
+            "neuralrays",
+            "chennai",
+            "india"
+          ],
+          "document_type": "contact",
+          "generation_method": "source_level_pattern_based",
+          "source_chunk_count": 1
+        }
+      }
+    },
+    {
+      "question_id": "auto_q0005",
+      "question": "What digital services or capabilities are described in Digital Services - NeuralRays AI?",
+      "source_url": "https://neuralrays.ai/digital-service",
+      "answer": "Neural Rays lists three main Digital Services:\n- Product and Platform Engineering\n- Cloud Transformation\n- Digital Assurance\n\nThese services cover software/platform development, cloud adoption, application modernisation, quality assurance, digital testing, and AI-led test automation.\n\nMost relevant page: Digital Services – NeuralRays AI\nSource: https://neuralrays.ai/digital-service",
+      "sources": [
+        "https://neuralrays.ai/digital-service",
+        "https://neuralrays.ai/about-us",
+        "https://neuralrays.ai"
+      ],
+      "passed": true,
+      "scores": {
+        "faithfulness": 0.76,
+        "correctness": 0.0909,
+        "context_precision": 0.488,
+        "answer_relevancy": 0.6667,
+        "hallucination": 0.24,
+        "source_presence": 1.0
+      },
+      "operational_metrics": {
+        "retrieval_latency_ms": 15.44,
+        "generation_latency_ms": 0.02,
+        "total_latency_ms": 15.46,
+        "estimated_prompt_tokens": 466,
+        "estimated_completion_tokens": 59,
+        "estimated_total_tokens": 525,
+        "estimated_cost_usd": 0.0,
+        "latency_score": 0.9985,
+        "cost_score": 1.0
+      },
+      "overall_quality_score": 0.6276,
+      "overall_rag_score": 0.7019,
+      "metadata": {
+        "source_chunk_id": "neuralrays_neuralrays-ai-digital-service_product-and-platform-engineering_0001_500ba04f4e,neuralrays_neuralrays-ai-digital-service_cloud-transformation_0002_bb4d3cde17,neuralrays_neuralrays-ai-digital-service_digital-assurance_0003_15358c7ea0",
+        "question_metadata": {
+          "title": "Digital Services - NeuralRays AI",
+          "source_url": "https://neuralrays.ai/digital-service",
+          "keywords": [
+            "cloud",
+            "testing",
+            "systems",
+            "product",
+            "software"
+          ],
+          "document_type": "digital_services",
+          "generation_method": "source_level_pattern_based",
+          "source_chunk_count": 3
+        }
+      }
+    },
+    {
+      "question_id": "auto_q0006",
+      "question": "What case studies or success stories are described in Success Stories - NeuralRays AI?",
+      "source_url": "https://neuralrays.ai/success-stories",
+      "answer": "Neural Rays lists several success stories, including:\n- Risk Management Software Platform\n- Digital Banking Platform\n- Geriatric Care Platform\n- Blockchain-Based Digital Health Platform\n- Asset Tracking and Inventory Management System\n- Oil and Gas Analytics\n- AI-Based Vehicle Assembly Line Defect Detection\n- Retail Macro and Micro Space Optimisation\n\nMost relevant page: Success Stories – NeuralRays AI\nSource: https://neuralrays.ai/success-stories",
+      "sources": [
+        "https://neuralrays.ai/success-stories"
+      ],
+      "passed": true,
+      "scores": {
+        "faithfulness": 0.8611,
+        "correctness": 0.0735,
+        "context_precision": 0.4123,
+        "answer_relevancy": 0.5,
+        "hallucination": 0.1389,
+        "source_presence": 1.0
+      },
+      "operational_metrics": {
+        "retrieval_latency_ms": 14.81,
+        "generation_latency_ms": 0.02,
+        "total_latency_ms": 14.83,
+        "estimated_prompt_tokens": 440,
+        "estimated_completion_tokens": 80,
+        "estimated_total_tokens": 520,
+        "estimated_cost_usd": 0.0,
+        "latency_score": 0.9985,
+        "cost_score": 1.0
+      },
+      "overall_quality_score": 0.618,
+      "overall_rag_score": 0.6942,
+      "metadata": {
+        "source_chunk_id": "neuralrays_neuralrays-ai-success-stories_sectors_0002_f21f5d4ead,neuralrays_neuralrays-ai-success-stories_financial-services_0004_50d5b4899e,neuralrays_neuralrays-ai-success-stories_healthcare_0007_8a5da3a286,neuralrays_neuralrays-ai-success-stories_healthcare_0010_c935e85fd4,neuralrays_neuralrays-ai-success-stories_manufacturing_0011_92cdfc79b5,neuralrays_neuralrays-ai-success-stories_energy_0012_961653c089,neuralrays_neuralrays-ai-success-stories_sector_0014_b6f6800734,neuralrays_neuralrays-ai-success-stories_retail_0015_054dea762a",
+        "question_metadata": {
+          "title": "Success Stories - NeuralRays AI",
+          "source_url": "https://neuralrays.ai/success-stories",
+          "keywords": [
+            "platform",
+            "neuralrays",
+            "management",
+            "care",
+            "section"
+          ],
+          "document_type": "case_study",
+          "generation_method": "source_level_pattern_based",
+          "source_chunk_count": 8
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "created_at": "2026-07-21T15:07:56",
+    "cost_note": "Estimated cost defaults to 0.0 because this prototype uses local models and does not call a paid external LLM."
+  }
+}
